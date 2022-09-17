@@ -11,10 +11,12 @@ box::use(
     haven = haven[read_dta],
     dplyr = dplyr[mutate, filter, case_when]
 )
+    #* create list object
+anes_2012 = list()
     #* Load original ANES file ----
-anes12 = read_dta('data/anes-2012/anes-2012.dta')
+anes_2012[['original']] = read_dta('data/anes-2012/anes-2012.dta')
 # Cleaning ----
-anes12Clean = anes12 |>
+anes_2012[['clean']] = anes_2012[['original']] |>
     #* Filter dataset to include only white respondents ----
     filter(dem_raceeth_x == 1) |>
     mutate(
@@ -224,4 +226,4 @@ anes12Clean = anes12 |>
     )
 
 # Save data
-write.csv(anes12Clean, 'data/anes-2012/anes-2012-updated.csv')
+write.csv(anes_2012[['clean']], 'data/anes-2012/anes-2012-updated.csv')
