@@ -45,7 +45,8 @@ anes_timeseries_cdf_stata13.dta
 *.tex
 comments/
 grant/
-drafts/
+drafts/old-drafts 
+drafts/*.tex
 notes/
 *.Rproj
 prospectus/
