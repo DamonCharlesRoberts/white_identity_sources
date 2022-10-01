@@ -53,3 +53,5 @@ prospectus/
 figures/
 pre-analysis_plan/
 archived_code/
+.vscode
+.DS_Store
