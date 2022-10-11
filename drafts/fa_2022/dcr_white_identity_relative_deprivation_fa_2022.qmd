@@ -1,0 +1,440 @@
+---
+title: |
+  Economic concerns appear to be weak predictors of white political identity
+short-title: Economic concerns
+published: "Manuscript draft: please do not share without author permission."
+code-repo: "For replication, go to: <https:://github.com/DamonCharlesRoberts/white-identity-sources>."
+author:
+  - name: Damon C. Roberts
+    email: damon.roberts-1@colorado.edu
+    orcid: 0000-0002-4360-3675
+    title: PhD Candidate
+    affiliations:
+      - id: CU
+        name: University of Colorado Boulder
+        department: Political Science
+        address: 333 UCB
+        city: Boulder
+        region: CO 
+        postal-code: 80309-0333
+abstract: |
+    Does economic or social and political threat explain white identity? Two leading arguments suggest that white identity results from a disruption of the racial status quo. However, they disagree on which disrupted element drives it. While one suggests that white identity comes from concern about whites' political influence, the other suggests that it is the result of concern with increased economic competition between whites and other racial groups. Considering the place that whiteness has in historical and contemporary institutions, I argue that white identity likely reflects concern about changes to their influence in the country's institutions. I use data from the American National Election Study that measure egotropic and sociotropic economic attitudes and leveraging questions gauging attitudes about social and political changes. Using a penalized regression, I examine whether proxies for economic threat appear to be plausible correlates of white identity. On balance, the models suggest that the hypothesis of economic threat is weaker than some suggest. I take this as evidence that white political identity, as it works today, is largely the result of whites' concerns with protecting the social and political status quo - and not so much economic.
+thanks: |
+    I would like to thank Jennifer Wolak for her feedback on the many drafts of this manuscript. I would also like to thank the Keller Center for the First Amendment for the research appointment that gave me the space to work on the early stages of this project. I would also like to thank Anand Sokhey and John Griffin for their advice and suggestions in the early drafts of this paper. I would also like to thank Tabitha Bonilla, Nicole Yadon, and participants and audience members of a Midwestern Political Science Association panel for which an earlier draft this idea was presented. I would also like to thank Tamar Malloy, Andrew Philips, Kathryn Schauer, Rachel O'Neal, Alexander Jensen, Komal Kaur, Andrew Engelhardt, and Madeline Mader for their encouragement and feedback at various stages of this project's development. All errors contained in this manuscript are ultimately mine.
+additional-info: |
+  I have no known conflict of interest to disclose.
+keywords:
+  - white identity
+  - economic threat
+  - cultural threat
+date: today
+bibliography: "../../assets/wid.bib"
+format:
+  hikmah-pdf: 
+    biblatex-chicago: true
+    biblio-style: authordate
+    biblatexoptions:
+      - backend=biber
+      - autolang=hyphen
+      - isbn=false
+      - uniquename=false
+linestretch: 2
+execute:
+  echo: false
+  warning: false
+  message: false
+header-includes:  
+- \usepackage{lscape}
+---
+
+```{r}
+#| label: block-setup
+
+# set seed
+set.seed(90210)
+# modularly load functions
+box::use(
+    dplyr = dplyr[select, filter, mutate, case_when, rename],
+    tidyr = tidyr[drop_na],
+    mice = mice[mice, pool],
+    miceadds = miceadds[mids2datlist],
+    brms = brms[brm, brm_multiple, set_prior, lasso, cumulative, prior],
+    tibble = tibble[tribble],
+    modelsummary = modelsummary[datasummary_skim, datasummary_correlation, modelsummary],
+    parameters = parameters[parameters, standardize_names],
+    ggplot2 = ggplot2[ggplot, aes, position_dodge, theme_minimal, geom_vline, labs, theme, element_text, scale_y_discrete],
+    tidybayes = tidybayes[geom_pointinterval],
+    performance = performance[check_model]
+)
+```
+
+```{r}
+#| label: cleaning-block
+
+# source cleaning scripts
+source('../../code/dcr_anes_2012_cleaning.R')
+source('../../code/dcr_anes_2016_cleaning.R')
+source('../../code/dcr_anes_2020_cleaning.R')
+
+```
+
+```{r}
+#| label: load-data-block
+# create list object for datasets
+data = list()
+# Create empty lasso list to store fitted models
+lasso = list()
+# Specify number of iterations for imputation
+data_sets = 10
+# load the cleaned data
+    #* 2012
+data[['anes_2012']] <- read.csv('../../data/anes-2012/anes-2012-updated.csv') |>
+    select(wid, rboff, epast, unpast, edu, income, losejob, immtakejobs, ecfamily, ecjob, tradbreak, govbias, inflwhite, whitediscrim, raceResent, pid, female)
+    #* 2016
+data[['anes_2016']] <- read.csv('../../data/anes-2016/anes-2016-updated.csv') |>
+    select(wid, rboff, epast, unpast, edu, income, losejob, immtakejobs, ecfamily, ecjob, tradbreak, govbias, inflwhite, whitediscrim, raceResent, pid, female)
+    #* 2020
+data[['anes_2020']] <- read.csv('../../data/anes-2020/anes-2020-updated.csv') |>
+    select(wid, rboff, epast, unpast, edu, income, losejob, immtakejobs, ecfamily, ecjob, govbias, inflwhite, whitediscrim, raceResent, pid, female)
+```
+
+# Introduction
+
+Those conducting post-mortem analyses of the 2016 Presidential election of Donald J. Trump, a presidential candidate that personifies white grievance politics, contend that the substantial presence of non-college-educated white supporters explains his electoral success [@griffin_et-al_2017]. Analyses by political scientists largely attribute Trump's success in attracting voters to those who see their whiteness as a politically relevant identity where they are distinct from Americans of other racial groups [@jardina_2020_pp]. For a long time, political scientists saw white political behavior and attitudes through the lens of prejudice. These analyses exclude another dimension of whites' racial attitudes: their affinity for, feelings of linked fate with other whites, and an expression that their race is a politically-relevant identity. More recently, scholars using the @tajfel_turner_1986 social psychological framework of identity challenge this tendency to focus on whites' prejudice by arguing that some whites may see their race as an identity essential and relevant to politics. As a result, while some may express out-group attitudes, they also express an in-group preference for other whites [@jardina_2019_cup]. Despite the importance of these attitudes, the source of these in-group preferences remains somewhat unclear. 
+
+There appears to be a mismatch between those who study sources of a variety of social identities and those that study white political identity. Scholars studying identity, more broadly, often focus on economic threats as a critical motivator for an expressed connection to a social in-group [see @huddy_2001]. However, some scholars studying white political attitudes and racial identity tend to focus on the role of political threats [see @bartels_2020]. This mismatch leads to some conceptualizing white identity as originating from economic views in the tradition of the identity literature. In contrast, others conceptualize white identity as coming from political and cultural threats. 
+
+I agree with those who focus on the connection between white political identity and political threats. Considering identity's historical and contextual roots [@trawalter_et-al_2022_cdps], I argue that white identifiers are concerned about their status in politics and society. Though I acknowledge that economic threat is a potent activation of identity and encourages engagement in group-based behavior, white identity holds decisive cultural and institutional significance in the U.S. [@rile-hayward_2013]. One's whiteness is not a descriptive characteristic, but it reflects a history of allowances by institutions and advantages in one's ability to influence politics. Though race and economics are undoubtedly correlated, we must be careful in specifying the data-generating process. 
+
+Along with providing a narrative that scholars might use to identify potential mechanisms connecting political threats to white identity, I examine the correlates of white identity. Using data from the 2012, 2016, and 2020 American National Election Study, I utilize penalized regression to test the claim that a handful of predictors that reflect attitudes about political power are more influential than general (sociotropic) and pocketbook (egotropic) attitudes about the economy. I find that proxies of political threat appear stronger than economic attitudes in the post-Trump era. As this particular analysis is not a causal test of the mechanism connecting threat to white identity, I close by arguing that scholars should continue to examine the mechanisms that explain this connection.
+
+# Identity and white political identity
+
+Social identity theory suggests that individuals form attitudes based on groups they associate with, even if those groups are subjectively defined [see @tajfel_turner_1986]. In the famous Robber's Cave experiment, @sherif_1988 divided a group of adolescent boys into two groups arbitrarily. After a week of spending time with others in the group, the boys came up with group names that defined the two groups and distinguished themselves; one group called themselves the Eagles, and the other group referred to themselves as the Rattlers. With the introduction of competition, these boys reported fierce hostility toward the members of the other group and expressed positive attitudes toward those within the group. 
+
+This example illustrates several features of social identities. The first feature of social identity theory is that these groups we may associate ourselves with are often subjectively defined [see @huddy_2001]. The second feature is that these subjective definitions of the group make distinctions between the two groups that come to matter to members of each group - some are part of our group, and some are part of that other group. Many cognitive theories suggest that this occurs as a result of the tendency for humans to reduce cognitive load by grouping things together [@huddy_2001]. The third feature is that introducing competition between these groups shapes attitudes toward those within and without your group. The motivator is that groups with higher status often want to keep that status, and individuals in the high-status group are much more likely to support inequality to satisfy that motivation [@burns_kinder_2012;@morrison_et-al_2009]. Fourth, individuals firmly hold these attitudes, which tend to be long-lasting. An additional feature of theories of social identity is that the degree to which one might identify with one group or another is fluid and that whether one identity that one might hold is active or if it is another often depends on the context and the identity's relevance to that context [@huddy_2012].
+
+Racial groups in the U.S. contain a number of these features. As a result, a burgeoning literature in political science that has made this connection takes the racial identity of whites more seriously as one that informs their political attitudes [see @jardina_2019_cup]. Race in America is subjectively defined [see @rile-hayward_2013], and these definitions are deeply embedded and reinforced by our institutions [@lopez_2006]. Whiteness and one's willingness to identify with that group is important [@wong_cho_2005] as it reflects a desire for an association with the history and affordances of being white [@mcdermott_samson_2005]. 
+
+In many eras of American history, there are several instances where we have sought to reclassify who is white. During the antebellum period, whiteness was no longer simply one's economic class. However, now it had become a reflection of a racial hierarchy that afforded some various rights and excluded others from enjoying the same rights (e.g., literacy tests). During this era, rather than conceptualizing whites as landowners of Caucasian descent, the definition of what was white shifted to include those previously labeled non-white Europeans, such as the Irish. Changes to definitions of who is white illustrate that the primary motivator was race and not class as to who holds some rights and who does not [@rile-hayward_2013]. 
+
+More contemporaneously, whites hold several strong political attitudes racialized by politicians. Whites' attitudes toward welfare programs are not too distinct from those toward Black Americans [@gilens_1999]. A provided explanation is that social welfare policies are more unpopular among whites when the media frames these policies as benefiting non-whites [@winter_2008;@van-doorn_2015]. Explicit cues reminding individuals of the racial hierarchy entrench the recipients' attitudes toward Black Americans [@lyle_2014; see also @wellman_et-al_2016]. Conservatives argued that Barack Obama, the first Black president, expressed support for the Affordable Care Act as a way to disproportionately help Black Americans [@tesler_2012;@tesler_2016]. These messages corresponded with a rise of survey reports expressing old-fashioned racism among whites during his administration [@tesler_2013]. While whites tend to report negative views about government aid for those in need when they are non-white recipients, evidence suggests that whites who live in communities with a higher proportion of poor whites report much more positive views of the poor than those that perceive the poor as mostly non-white [@hopkins_2009]. Additionally, telling whites that other whites will be the beneficiaries of an entitlement program increases their support for such a program [@wetts_willer_2018].
+
+As an identity, much of the literature view these attitudes as coming from the presence or focus on economic threats. Some studying white political identity find economic predictors as substantively and statistically significant [see @perez_et-al_2022_pp]. From non-experimental evidence, others make similar arguments about what predicts white political identity. @bunyasi_2019 provides evidence suggesting that Trump's messages highlighting increased job market competition harming whites because of affirmative action was a successful strategy and helped build his base of support. After all, the identity literature, more broadly, often focuses on economic threats. Evolutionary psychologists often take the position that identity and the resulting attitudes and behaviors directed toward out-groups are the result of competition over material resources [see @huddy_2001]. Many political scientists use this as an explanation for negative attitudes directed toward immigrants among those who feel insecure about their job prospects [@pardos-prado_xena_2019]. Others argue that deindustrialization and job loss activate whites' concerns about the racial hierarchy and predict their support for Republican challengers that express support for keeping the racial status quo [@baccini_weymouth_2021_apsr].
+
+Not all agree, however. Some suggest that the negative attitudes that whites express toward immigrants result from concerns about cultural changes in those living in border towns [@hainmueller_hopkins_2014]. Others suggest that simply reminding whites of these demographic shifts activates these racial identity-based attitudes [@craig_richeson_2014]. Some other evidence suggests that these identity-based attitudes are better predicted by ethnic antagonism [@bartels_2020] and by racial animus [@fahey_et-al_2020] and explicitly take the position that a reaction to economic threats does not drive these. However, these attitudes tend to focus on prejudiced views rather than a reflection of a connection to other whites. 
+
+# Is white identity non-material?
+
+As much of the literature on whites' racial attitudes rely heavily on social identity theory as a paradigm, a significant portion of it presents the source of these group-based views as responses to economic threat. However, some disagree with this position [see @jardina_2019_cup] and view these attitudes as the result of changes to the racial hierarchy. These other perspectives provide explanations for whites' attitudes and conceptualize the definition of whiteness and white identity as a desire to retain political power.
+
+Historical accounts that contextualize attitudes stemming from white racial identity seem to suggest that, though economics correlates with racial attitudes, what it meant to be white was no longer about class. However, it became about what it meant for access and privileges afforded by institutions [@rile-hayward_2013]. In the $19^{th}$ century, privilege came from one's freedom and wealth. Those who were not enslaved but were poor were not considered white and were of a lower strata than whites who owned land [@rile-hayward_2013]. With the abolition of slavery, the expressed (explicit) concern became not about wealth but now about race. This motivated a shift in how the institutions and how whites defined themselves. It became the focus for whites to be a higher status group, regardless of whether or not they were poorer than formerly enslaved Black Americans [@rile-hayward_2013]. 
+
+Many conceptualizations of white political identity align with its primary source as concern for the group's political power. While a critical component of identity is a feeling of your fate as linked with others in your group [@leach_et-al_2008], this linked fate is the connection between attitudes and material forms of threat but that identity, in and of itself, is better conceptualized as a result of cultural or ideational threat [@donnelly_2020]. Aligning with the contextual account of racial identity for whites, many conceptualize white identity as an expressed desire for a recognition of privilege and status by institutions [@lopez_2006] and a connection with the history that connects whites to their status [@mcdermott_samson_2005]. The prominent account of white political identity and its implications in contemporary American politics argues for a strong connection between white political identity and a desire to protect this racial hierarchy and status. This conceptualization reflects the tendency to report in-group-oriented, not necessarily out-group-oriented, attitudes [@jardina_2019_cup].
+
+As this is an open question and is rather a complex one, I attempt to wade into this by parsing through which of these two perspectives are more plausible. As I discuss in the concluding section, I argue that scholars should continue taking the conceptualization and measurement of white political identification seriously and examine the mechanisms that connect economic and political threats to white political identity. In the next section, I examine whether attitudes expressing concern with economic or political threats are more robust correlates of the degree to which someone feels that being white is important to their identity. The goal is not to test particular causal mechanisms but to examine whether my belief and others' that white identity reflects reactions to political threats more than it does economic.
+
+# Data
+
+To examine whether whites' attitudes expressing concern about political threats are more robust correlates than their perceptions of the economy, I use the 2012, 2016, and 2020 American National Election Studies (ANES). The studies are nationally representative questions that capture several questions that lend themselves to testing the relationship between economic and political concerns while also asking white respondents to report how important being white is to their identity.
+
+Of course, I cannot *prove* that these questions reflect the two types of threats I purport to represent. This leaves any evidence of the particular mechanism connecting these predictors to reported levels of white identity -- among other reasons -- suspect. However, the goal of this paper is not necessarily to test a particular causal mechanism -- this is a much larger project that we should continue to work on collectively. Nevertheless, the paper aims to offer an argument that contextualizes white identity in history and how that leads to different predictions about the correlates of white identity than many might assume from understanding the literature on the origins of social identity.
+
+Each study asks white respondents, "How important is being white to your Identity" and offers them a five-point Likert scale with the options reflecting their level of agreement with the question ^[Details about question-wording, original ANES coding, and my coding for all variables I include in my models are included in @tbl-anes-measures located in the Appendix. I include descriptive statistics for the measures in these samples in @tbl-2012-descriptive-stats, @tbl-2016-descriptive-stats, and @tbl-2020-descriptive-stats in the Appendix]. They do not ask white respondents to report on items from the white political identity measures of @jardina_2019_cup or the more complex battery of items that @helms_carter_1990 discusses. However, this question does capture the degree to which one sees their whiteness as part of who they are and reflects the conceptualization that others have used [see @schildkraut_2017;@jardina_2019_cup;@perez_et-al_2022_pp]. 
+
+The ANES does not ask questions that explicitly capture the attitudes of respondents about perceptions of the economy for different groups. That is, there are no questions asking respondents about their perceptions of the economy for Black Americans relative to white Americans. The literature suggests, however, that those who have lower incomes are more likely to feel insecure about their financial status and are more likely to use this economic threat as a motivation for their negative attitudes toward immigrants [@pardos-prado_xena_2019]. Therefore, one measure of economic threat that I use is the respondent's reported level of total family income. Those with lower levels of education are also likely to feel similar levels of insecurity about their economic status, as their ability to seek higher-paying jobs is likely more limited. Whites who report that they feel that their family is doing worse relative to the previous year and knowing others who lost a job also reflect a degree of insecurity about their economic status and may reflect perceptions of economic threat [@jardina_2019_cup]. I include an item reflecting respondents' perceptions of economic mobility today relative to the past. In 2012, whites harboring negative attitudes toward Obama rooted in racial animous were more likely to express more negative views of the economy relative to how it had been in the past [@sides_et-al_2018]. Others demonstrate that those who are reacting to economic threats and are concerned about their and other whites' status evaluate the economy and their economic position as worse [@baccini_weymouth_2021_apsr]. Therefore, I additionally include questions about retrospective sociotropic evaluations of the economy.
+
+The ANES includes several questions that reflect perceptions of whites losing political power. First, I include a question that asks respondents to report whether or not they felt that whites currently have too little or too much influence on politics today. I also want to examine the degree to which respondents feel that the institutions benefit non-whites rather than whites by including the question that whites face discrimination and that the government is biased against whites. I include a question asking respondents about their belief that traditions in this country are breaking^[The ANES only included this question in the 2012 and 2016 questionnaires]. While these, like the economic attitudes, are just proxies of threat, they reflect the extent to which respondents may feel insecure about the political influence of whites.
+
+Furthermore, the ANES includes the racial resentment battery, which asks questions reflecting whites' beliefs that Blacks are individually responsible for their circumstances and undeserving of assistance. I control for racial resentment as the individual items likely confound the relationship between both economic and political threat measures on expressed white identity. As economic evaluations often reflect partisans reporting a better economy when the government is run by co-partisans and a worse economy when the other party runs the government [@achen_bartels_2017], I additionally control for a 7-point item measure of partisanship. Finally, I control for whether or not the respondent is female, as Sex affects one's socioeconomic status.
+
+## Evidence from a penalized regression
+
+The summary of the literature points to a large number of potential predictors that influence the degree to which one takes on white political identity. To adjudicate between hypotheses, there is value in a comprehensive model that considers the plausibility of each. Most models consider those predictors they believe are most plausible and do not include others that the researcher believes to be less plausible [see @clarke_primo_2012]. They understandably do this out of concern with increases in the inefficiency of one's regression estimates: the more predictors you include, the risk of overfitting your model to your particular sample and from multicollinearity increases, thereby erroneously generalizing conclusions drawn from the fitted statistical model. Though this concern is reasonable, such a model neglects to examine the effects of the predictors a researcher believes to be less plausible.
+
+Therefore, I use a penalized regression model to balance these concerns. The literature surveyed above suggests that there are a small number of variables that do predict white political identity, and there are many others that have no effect. Imagining an assumed hypothesis about the distribution of coefficients, this implies that the L2 regularization parameter equals 0. This is because the L2 regularization parameter shrinks coefficients asymptotically toward zero. The L1 regularization parameter, however, does allow for a shrinkage parameter to pull coefficients to 0. Given this, it suggests that the more appropriate model to capture this debate would be the LASSO penalized regression.
+
+One option for implementation is to use the "classical" LASSO, which relies on an optimization procedure through cross-validation. It is a frequentist approach to LASSO penalized regression. However, there are several positive benefits to the second implementation of the LASSO penalized regression in a Bayesian framework [see @van-erp_et-al_2019_jmp]. From my review of the literature, I have \textit{apriori} expectations for the distribution of effects on my predictors in the form of a Laplace distribution which I explicitly define in my prior density function. I also have the additional benefit of having the ability to define its hyperparameters. Meaning I suspect that there is a peak around zero and that there are relatively large tails. This characterization of my prior fits with that of the LASSO - a large number of included predictors have zero effect, with a relatively smaller proportion of included predictors that do have an effect but are relatively unsure as to how large those coefficients might be. I can specify the scale of that uncertainty by specifying a hyperparameter for this LASSO prior. Without having to perform cross-validation as I would with the classical LASSO, my posterior distribution naturally reflects the uncertainty around the size of my L2 shrinkage parameter and can estimate models with different L2 shrinkage parameters simultaneously. As $\verb|stan|$ includes implementations of this model, I rely on Hamiltonian Monte Carlo, a type of Markov Chain Monte Carlo sampling which allows for non-convexity in the L2 shrinkage parameters. As classical LASSO models are challenging to interpret due to cross-validation, using credible intervals offers a much less error-prone interpretation.
+
+My measure of white identity is ordinal. Though white identity as a concept is likely continuous, through the specification of a cumulative density function with a logit link, my model bins this latent continuous space based on the number of response options. Though it creates a more complicated computational task, it is a more appropriate model specification given the available measure and my assumptions about the concept [@liddell_kruschke_2018_jesp].
+
+To account for potential problems stemming from missing data, I impute my data by using multiple imputation with chained equations (MICE) where the particular model I use is a random forest model to allow for more flexibility and to reduce model dependence [@buuren_goothuis-oudshoorn_2011; @marbach_2022_pa]^[I impute ```r sprintf('%.0f', data_sets)``` datasets and simultaneously fit my Bayesian LASSO on each dataset and pool the results. Uncertainty reflected in my reported credible intervals not only reflects the uncertainty from one model, but my reported uncertainty also reflects the uncertainty generated from the imputation procedure. One drawback with this particular approach is that my normalized split-$\hat{R}$ will likely be greater than the widely recognized 1.01 cutoff that indicates model convergence due to the pooling of my multiply imputed datasets.]. I report the results of the model fitted using listwise deletion in @tbl-2012-lasso-simple, @tbl-2016-lasso-simple, and @tbl-2020-lasso-simple.
+
+```{r}
+#| label: imputation-block
+#| eval: false
+# Imputation
+    #* 2012
+data[['anes_2012_imputed']] <- mice(data[['anes_2012']], m = data_sets, method = 'rf')
+saveRDS(data[['anes_2012_imputed']], file = '../data/anes-2012/anes-2012-imputed.rds')
+    #* 2016
+data[['anes_2016_imputed']] <- mice(data[['anes_2016']], m = data_sets, method = 'rf')
+saveRDS(data[['anes_2016_imputed']], file = '../data/anes-2016/anes-2016-imputed.rds')
+    #* 2020
+data[['anes_2020_imputed']] <- mice(data[['anes_2020']], m = data_sets, method = 'rf')
+saveRDS(data[['anes_2020_imputed']], file = '../data/anes-2020/anes-2020-imputed.rds')
+```
+
+```{r}
+#| label: imputation-loading-block
+
+data[['anes_2012_imputed']] <- readRDS('../..//data/anes-2012/anes-2012-imputed.rds')
+
+data[['anes_2016_imputed']] <- readRDS('../../data/anes-2016/anes-2016-imputed.rds')
+
+data[['anes_2020_imputed']] <- readRDS('../../data/anes-2020/anes-2020-imputed.rds')
+```
+
+## Results
+
+@fig-2012-2016-2020-ordinal-lasso presents the estimates of my fitted ordinal models with the LASSO shrinkage prior^[@tbl-2012-2016-2020-ordinal-lasso presents the table of results.]. These models are fit on 6 chains with 2000 iterations each. To examine the evidence of whether a particular predictor "matters" for predicting white political identity, I examine the estimated credible intervals, which report the probability that the true estimate falls within the estimated range. I construct these credible intervals by reporting estimates between the 2.5% and 97.5% quantiles. This means that for a given credible interval, there is a two-tailed 95% probability that the true value falls within that range. For values outside the range of the credible interval, it is relatively implausible that the given value is the true value. 
+
+```{r}
+#| label: models-block
+#| eval: false
+
+# Models
+    #* 2012
+lasso[['2012_simple']] <- brm(wid ~ rboff + epast + unpast + edu + income + losejob + ecfamily + ecjob + tradbreak + govbias + whitediscrim + raceResent + pid + female, data = data[['anes_2012']], prior = set_prior(lasso(1)), chains = 6, iter = 2000, family = cumulative(link = 'logit'))
+saveRDS(lasso[['2012_simple']], file = '../data/lasso_2012_simple.rds')
+
+lasso[['2012_ordinal']] <- brm_multiple(wid ~ rboff + epast + unpast + edu + income + losejob +  ecfamily + ecjob + tradbreak + govbias + whitediscrim + raceResent + pid + female, data = data[['anes_2012_imputed']], prior = set_prior(lasso(1)), chains = 6, iter = 2000, family = cumulative(link = 'logit'))
+saveRDS(lasso[['2012_ordinal']], file = '../data/lasso_2012_ordinal.rds')
+    #* 2016
+lasso[['2016_simple']] <- brm(wid ~ rboff + epast + unpast + edu + income + losejob + ecfamily + ecjob + tradbreak + govbias + whitediscrim + raceResent + pid + female, data = data[['anes_2016']], prior = set_prior(lasso(1)), chains = 6, iter = 2000, family = cumulative(link = 'logit'))
+saveRDS(lasso[['2016_simple']], file = '../data/lasso_2016_simple.rds')
+
+lasso[['2016_ordinal']] <- brm_multiple(wid ~ rboff + epast + unpast + edu + income + losejob + ecfamily + ecjob + tradbreak + govbias + whitediscrim + raceResent + pid + female, data = data[['anes_2016_imputed']], prior = set_prior(lasso(1)), chains = 6, iter = 2000, family = cumulative(link = 'logit'))
+saveRDS(lasso[['2016_ordinal']], file = '../data/lasso_2016_ordinal.rds')
+    #* 2020
+lasso[['2020_simple']] <- brm(wid ~ rboff + epast + unpast + edu + income + losejob + ecfamily + ecjob + govbias + whitediscrim + raceResent + pid + female, data = data[['anes_2020']], prior = set_prior(lasso(1)), chains = 6, iter = 2000, family = cumulative(link = 'logit'))
+saveRDS(lasso[['2020_simple']], file = '../data/lasso_2020_simple.rds')
+
+lasso[['2020_ordinal']] <- brm_multiple(wid ~ rboff + epast + unpast + edu + income + losejob + ecfamily + ecjob + govbias + whitediscrim + raceResent + pid + female, data = data[['anes_2020_imputed']], prior = set_prior(lasso(1)), chains = 6, iter = 2000, family = cumulative(link = 'logit'))
+saveRDS(lasso[['2020_ordinal']], file = '../data/lasso_2020_ordinal.rds')
+```
+
+```{r}
+#| label: loading-fitted-models-block
+
+# 2012
+lasso[['2012 LWD']] <- readRDS('../../data/lasso_2012_simple.rds') 
+lasso[['2012']] <- readRDS('../../data/lasso_2012_ordinal.rds') 
+# 2016
+lasso[['2016 LWD']] <- readRDS('../../data/lasso_2016_simple.rds') 
+lasso[['2016']] <- readRDS('../../data/lasso_2016_ordinal.rds')
+# 2020
+lasso[['2020 LWD']] <- readRDS('../../data/lasso_2020_simple.rds')
+lasso[['2020']] <- readRDS('../../data/lasso_2020_ordinal.rds')
+```
+
+```{r}
+#| label: fig-2012-2016-2020-ordinal-lasso
+#| fig-cap: Economic factors are weak predictors of white identity
+#| fig-height: 9
+#| fig-width: 9
+# Graphs
+    #* Posterior draws
+lasso[['2012_ordinal_tidy']] <- parameters(lasso[['2012']], conf.int = 0.95, verbose = FALSE) |>
+    standardize_names(style = 'broom') |>
+    data.frame() |>
+    mutate(model = '2012') |>
+    filter(!is.na(term))
+
+lasso[['2016_ordinal_tidy']] <- parameters(lasso[['2016']], conf.int = 0.95, verbose = FALSE) |>
+    standardize_names(style = 'broom') |>
+    data.frame() |>
+    mutate(model = '2016') |>
+    filter(!is.na(term))
+
+lasso[['2020_ordinal_tidy']] <- parameters(lasso[['2020']], conf.int = 0.95, verbose = FALSE) |>
+    standardize_names(style = 'broom') |>
+    data.frame() |>
+    mutate(model = '2020') |>
+    filter(!is.na(term))
+
+lasso[['ordinal_tidy']] <- rbind(lasso[['2012_ordinal_tidy']], lasso[['2016_ordinal_tidy']], lasso[['2020_ordinal_tidy']]) |>
+  mutate(
+    term = case_when(term == 'b_rboff' ~ 'Retrospective better off', term == 'b_epast' ~ 'Economy better', term == 'b_unpast' ~ 'Unemployment better', term == 'b_edu' ~ 'Education', term == 'b_income' ~ 'Income', term == 'b_losejob' ~ 'Worried about losing job', term == 'b_ecfamily' ~ 'Worried about family finances', term == 'b_ecjob' ~ 'Know someone lost job', term == 'b_tradbreak' ~ 'New lifestyles breaking society', term == 'b_govbias' ~ 'Gov. biased against whites', term == 'b_inflwhite' ~ 'whites influence politics', term == 'b_whitediscrim' ~ 'whites are discriminated against', term == 'b_raceResent' ~ 'Racial resentment', term == 'b_pid' ~ 'Party ID', term == 'b_female' ~ 'Female'),
+    term = factor(term, levels = c('Retrospective better off', 'Economy better', 'Unemployment better', 'Education', 'Income', 'Worried about losing job', 'Worried about family finances', 'Know someone lost job', 'New lifestyles breaking society', 'Gov. biased against whites', 'whites influence politics', 'whites are discriminated against', 'Racial resentment', 'Party ID', 'Female'))
+  ) |>
+  filter(!is.na(term))
+
+ggplot(data = lasso[['ordinal_tidy']], aes(y = term, x = estimate, xmin = conf.low, xmax = conf.high, linetype = factor(model), shape = factor(model))) +
+    geom_pointinterval(position = position_dodge(width = 0.4), size = 3) +
+    geom_vline(xintercept = 0, linetype = 2) +
+    scale_y_discrete(limits = rev) +
+    theme_minimal() +
+    labs(linetype = 'Model', shape = 'Model', x = 'Estimate', y = '', caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.') + 
+    theme(text=element_text(size=12, family = 'sans'))
+```
+
+Examining the figure, it is readily apparent that in the face of indicators of attitudes about political status, economic attitudes inconsistently associate with white political identity. In all three years, reported attitudes about the nation's economy being better relative to the previous year, reported feelings about the nation's unemployment rate, income, concern about one's family finances, and knowing someone who lost a job are not meaningfully correlated with white political identity. For other indicators of economic threat, none appear to be consistently meaningful. Retrospective evaluations of one's financial situation and education matter in 2012, but these effects were not present in 2016 and 2020.
+
+Turning to indicators of political threat, we still see significant inconsistency. In both 2012 and 2016, whether someone feels that new lifestyles are breaking society positively affects reported levels of white political identity. This relationship is meaningful in 2012 and 2016 (this question is not present in the 2020 questionnaire). In 2020, those who reported that the government favored Black Americans also reported a higher white political identity, and those who feel that whites are discriminated against; however, neither of these effects are meaningful in 2012 or 2016.
+
+## Discussion
+
+Overall, these results suggest that the effects of economic threat on white political identity are more robust in the pre-Trump era. Again, this is not confirmatory as there is no test of a causal mechanism for either economic or political threats. The goal of this analysis is to examine whether, in an omnibus test, either of these threats appears to be a more plausible predictor of white political identity. Though the relationship between political threats is inconsistent, their relationships appear more likely; particularly when we consider how many of these attitudes are explained by a rather complex data-generating process.
+
+Economic threats tend to play a more significant part in explaining white identification in 2012. Political threats, however, appear to be a stronger predictor of white identification in the post-Trump era. In 2012, the U.S. economy was recovering from a massive recession and housing market collapse. However, as Obama's administration continued, conservatives became more outspoken about Obama's race [@tesler_2016]. This shift to focus on Obama's race continued through the 2016 Presidential election and may reflect a much more explicit message to whites about political threats [@sides_et-al_2018]. Though in 2020, the global economy faced significant uncertainty due to the COVID-19 pandemic, economic factors appear to be relatively less important. These results suggest that white political identity results from a political threat in the post-Trump era.
+
+# Conclusion
+
+The literature on social identity suggests that the centrality of one's identity and group-based attitudes and behaviors result from economic threat. However, white political identity has a historical and institutional significance that, while tied up in economics, reacts to changes in whites' influence over these institutions. 
+
+As pitting two theories against one another is a methodological challenge, I use data from the 2012, 2016, and 2020 ANES to demonstrate whether the relationships between attitudes proxying political and economic threats are more plausible. While this exercise is not and should not be interpreted as causal, I do demonstrate that economic factors appear to have a weaker relationship with white identity than political attitudes - particularly in the post-Trump era.
+
+The narrative I advocate for suggests that white political identity is most responsive to threats of whites' institutional influence. The descriptive analysis of the relationships between political and economic threat fall short of causal identification. With the results of these analyses, scholars have evidence suggesting that economic threats appear to weakly associate with one's expression of a white political identity when including political threats in the same model.
+
+The task for scholars is to examine whether political threats have any causal bearing on explaining the source of white political identity. This undoubtedly is a difficult task as threats are hard to treat experimentally and are reasonably suspect with observational data.
+
+{{< pagebreak >}}
+<!--
+TODO:
+  - Make a strong assertion about my results
+  - Discuss why I think economic factors don't matter when they matter in most identity papers
+  - What does this mean for how we understand white identity? Elaborate on the takeaway of the paper and what I added but also what questions are still there.
+-->
+
+# Appendix{#sec-appendix}
+
+## Measures{#sec-measures}
+
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+|                                          | Abbreviated question                                       | ANES Coding                                                                                                                                                      | Author coding                                                                                                                                                             | Years            |
++==========================================+============================================================+==================================================================================================================================================================+===========================================================================================================================================================================+==================+
+| white identity                           | How important is being white to your identity              | 1 = Extremely important; 2 = Very important; 3 = Moderately important; 4 = A little important; 5 = Not at all important; \<1 Missing, not asked, etc             | 1 = Not at all important; 2 = A little important; 3 = Moderately important; 4 = Very important; 5 = Extremely important; NA = Missing, not asked, etc                     | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| **Economics**                            |                                                            |                                                                                                                                                                  |                                                                                                                                                                           |                  |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Retrospective better off                 | How much better worse off than 1 year ago                  | 1 = Much better; 2 = Somewhat better; 3 = The same; 4 = Somewhat worse; 5 = Much worse, \< 1 Missing, not asked, etc                                             | -2 = Much worse; -1 = Somewhat worse; 0 = The same; 1 = Somewhat better; 2 = Much better; NA = Missing, not asked, etc                                                    | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Economy better                           | U.S. economy better worse off than 1 year ago              | 1 = Much better; 2 = somewhat better; 3 = Stayed about the same, 4 = Somewhat worse; 5 = Much worse; \< 1 Missing, not asked, etc                                | -2 = Much worse; -1 = Somewhat worse; 0 = The same; 1 = Somewhat better; 2 = Much better; NA = Missing, not asked, etc                                                    | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Unemployment better                      | Unemployment better or worse than 1 year ago               | 1 = Much better; 2 = somewhat better; 3 = Stayed about the same, 4 = Somewhat worse; 5 = Much worse; \< 1 Missing, not asked, etc                                | -2 = Much worse; -1 = Somewhat worse; 0 = The same; 1 = Somewhat better; 2 = Much better; NA = Missing, not asked, etc                                                    | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Education                                | Educational attainment                                     | 1 = \< than High school; 2 = High school; 3 = Some post-High school; 4 = Bachelor's degree; \< 1 Missing, not asked, etc                                         | 1 = \< than High school; 2 = High school; 3 = Some post-High school; 4 = Bachelor's degree; NA = Missing, not asked, etc                                                  | 2012, 2020       |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Education (2016)                         | Educational attainment                                     | See ANES codebook                                                                                                                                                | See ANES codebook; NA = MIssing, not asked, etc                                                                                                                           | 2016             |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Income                                   | Total family income                                        | See ANES codebook; \< Missing, not asked, etc                                                                                                                    | See ANES codebook; NA = MIssing, not asked, etc                                                                                                                           | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Worried about losing job                 | How worried about losing job in near future                | 1 = Not at all; 2 = A little; 3 = Moderately; 4 = Very; 5 = Extremely; \< 1 Missing, not asked, etc                                                              | -2 = Not at all; -1 = A little; 0 = Moderately; 1 = Very; 2 = Extremely                                                                                                   | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Immigrants take jobs                     | How likely immigration will take away jobs                 | 1 = Extremely; 2 = Very; 3 = Somewhat; 4 = Not at all; \< 1 Missing, not asked, etc                                                                              | 1 = Not at all; 2 = Somewhat; 3 = Very; 4 = Extremely; NA = Missing, not asked, etc                                                                                       | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Worried about family finances            | Worry about family financial situation                     | 1 = Extremely; 2 = Very; 3 = Moderately; 4 = A little; 5 = Not at all; \< 1 Missing, not asked, etc                                                              | 1 = Not at all, 2 = A little; 3 = Moderately; 4 = Very; 5 = Extremely; NA = Missing, not asked, etc                                                                       | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Know someone lost job                    | Know someone who lost job                                  | 1 = Someone lost job; 2 = No one lost job; \< 1 Missing, not asked, etc                                                                                          | 0 = No one lost job; 1 = Someone lost job; NA = Missing, not asked, etc                                                                                                   | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| **Political**                            |                                                            |                                                                                                                                                                  |                                                                                                                                                                           |                  |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| New lifestyles breaking society          | Newer lifestyles breaking down society                     | 1 = Agree strongly; 2 = Agree somewhat; 3 = Neither; 4 = Disagree somewhat; 5 = Disagree strongly; \< 1 Missing, not asked, etc                                  | -2 = Disagree strongly; -1 = Disagree somewhat; 0 = Neither, 1 = Agree somewhat; 2 = Agree strongly                                                                       | 2012, 2016       |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Government biased against whites         | Does the Administration favor Blacks or whites (2012 only) | 1 = Favors whites; 2 = Favors Blacks; 3 = Treats both the same; \< 1 Missing, not asked, etc                                                                     | -1 = Favors whites; 0 = Treats both the same; 1 = Favors Blacks; NA = Missing, not asked, etc                                                                             | 2012, 2016, 2020 |
+|                                          |                                                            |                                                                                                                                                                  |                                                                                                                                                                           |                  |
+|                                          | Does the Federal Gov treat Blacks or whites Better         |                                                                                                                                                                  |                                                                                                                                                                           |                  |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| whites influence politics                | How much influence do whites have on U.S. politics         | 1 = Too much; 2 = Just about right; 3 = Too little; \< 1 Missing, not asked, etc                                                                                 | -1 = Too little; 0 = Just about right; 1 = Too much; NA = Missing, not asked, etc                                                                                         | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| whites are discriminated against         | Discrimination in U.S. against whites                      | 1 = A great deal; 2 = A lot; 3 = A moderate amount; 4 = A little; 5 = None at all; \< 1 Missing, not asked, etc                                                  | 1 = None at all; 2 = A little; 3 = A moderate amount; 4 = A lot; 5 = A great deal; NA = Missing, not asked, etc                                                           | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| **Controls**                             |                                                            |                                                                                                                                                                  |                                                                                                                                                                           |                  |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Racial Resentment                        | Standard, 4-item, battery                                  | 5-point Likert scale                                                                                                                                             | Avg of four questions; NA = Missing, not asked, etc                                                                                                                       | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Party ID                                 | Standard battery                                           | 1 = Strong Democrat; 2 = Democrat; 3 = Leans Democrat; 4 = Independent; 5 = Leans Republican; 6 = Republican; 7 = Strong Republican; \< 1 Missing, not asked, etc| 1 = Strong Democrat; 2 = Democrat; 3 = Leans Democrat; 4 = Independent/Neither; 5 = Leans Republican; 6 = Republican; 7 = Strong Republican; \< 1 Missing, not asked, etc | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+| Female                                   | Sex of respondent                                          | 1 = Male, 2 = Female; \< 1 Missing, not asked, etc                                                                                                               | 0 = Male, 1 = Female; NA = Missing, not asked, etc                                                                                                                        | 2012, 2016, 2020 |
++------------------------------------------+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+
+: ANES Measures {#tbl-anes-measures}
+
+{{< pagebreak >}}
+
+## Descriptive statistics {#sec-desc-stats}
+
+```{r}
+#| label: tbl-2012-descriptive-stats
+#| tbl-cap: 2012 ANES Descriptive Statistics
+
+data[['anes_2012']] |>
+  rename(`white identity` = wid, `Retrospective better off` = rboff, `Economy better` = epast,    `Unemployment better` = unpast, `Education` = edu, `Income` = income, `Worried about losing job` = losejob, `Immigrants take jobs` = immtakejobs, `Worried about family finances` = ecfamily, `Know someone lost job` = ecjob, `New lifestyles breaking society` = tradbreak, `Government biased against whites` = govbias, `whites influence politics` = inflwhite, `whites are discriminated against` = whitediscrim, `Racial resentment` = raceResent, `Party ID` = pid, `Female` = female) |>
+  datasummary_skim(notes = c('NAs are included in Unique column.', 'Data source: 2012 American National Election Study, unweighted.'))
+```
+
+```{r}
+#| label: tbl-2016-descriptive-stats
+#| tbl-cap: 2016 ANES Descriptive Statistics
+
+data[['anes_2016']] |>
+  rename(`white identity` = wid, `Retrospective better off` = rboff, `Economy better` = epast,    `Unemployment better` = unpast, `Education` = edu, `Income` = income, `Worried about losing job` = losejob, `Immigrants take jobs` = immtakejobs, `Worried about family finances` = ecfamily, `Know someone lost job` = ecjob, `New lifestyles breaking society` = tradbreak, `Government biased against whites` = govbias, `whites influence politics` = inflwhite, `whites are discriminated against` = whitediscrim, `Racial resentment` = raceResent, `Party ID` = pid, `Female` = female) |>
+  datasummary_skim(notes = c('NAs are included in Unique column.', 'Data source: 2016 American National Election Study, unweighted.'))
+```
+
+```{r}
+#| label: tbl-2020-descriptive-stats
+#| tbl-cap: 2020 ANES Descriptive Statistics
+
+data[['anes_2020']] |>
+  rename(`white identity` = wid, `Retrospective better off` = rboff, `Economy better` = epast,    `Unemployment better` = unpast, `Education` = edu, `Income` = income, `Worried about losing job` = losejob, `Immigrants take jobs` = immtakejobs, `Worried about family finances` = ecfamily, `Know someone lost job` = ecjob, `Government biased against whites` = govbias, `whites influence politics` = inflwhite, `whites are discriminated against` = whitediscrim, `Racial resentment` = raceResent, `Party ID` = pid, `Female` = female) |>
+  datasummary_skim(notes = c('NAs are included in Unique column.', 'Data source: 2020 American National Election Study, unweighted.'))
+```
+
+{{< pagebreak >}}
+
+## Model results
+```{r}
+#| label: model-table-setup-block
+    #* Set up non-coefficient related information from models
+gm <- list(
+    list('raw' = 'nobs', 'clean' = 'N', 'fmt' = 0)
+)
+
+cm <- c('b_rboff' = 'Retrospective better off', 'b_epast' = 'Economy better', 'b_unpast' = 'Unemployment better', 'b_edu' = 'Education', 'b_income' = 'Income', 'b_losejob' = 'Worried about losing job', 'b_ecfamily' = 'Worried about family finances', 'b_ecjob' = 'Know someone lost job', 'b_tradbreak' = 'New lifestyles breaking society', 'b_govbias' = 'Gov. biased against whites', 'b_inflwhite' = 'whites influence politics', 'b_whitediscrim' = 'whites are discriminated against', 'b_raceResent' = 'Racial resentment', 'b_pid' = 'Party ID', 'b_female' = 'Female', 'b_Intercept[1]' = 'Threshold 1', 'b_Intercept[2]' = 'Threshold 2', 'b_Intercept[3]' = 'Threshold 3', 'b_Intercept[4]' = 'Threshold 4')
+```
+
+```{r}
+#| label: tbl-2012-lasso-simple
+#| tbl-cap: Predictors of white Identity in 2012
+
+rows <- tribble(~term, ~`2012 LWD`, 'Economic', '', 'Non-material', '', 'Demographics', '', 'Thresholds', '')
+attr(rows, 'position') <- c(1, 10, 19, 28)
+
+modelsummary(lasso[['2012 LWD']], coef_map = cm, statistic = 'conf.int', gof_map = gm, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2012 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2016-lasso-simple
+#| tbl-cap: Predictors of white identity in 2012
+
+rows <- tribble(~term, ~`2016 LWD`, 'Economic', '', 'Non-material', '', 'Demographics', '', 'Thresholds', '')
+attr(rows, 'position') <- c(1, 13, 22, 31)
+
+modelsummary(lasso[['2016 LWD']], coef_map = cm, statistic = 'conf.int', gof_map = gm, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2016 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2020-lasso-simple
+#| tbl-cap: Predictors of white identity in 2020
+
+rows <- tribble(~term, ~`2020 LWD`, 'Economic', '', 'Non-material', '', 'Demographics', '', 'Thresholds', '')
+attr(rows, 'position') <- c(1, 13, 22, 31)
+
+modelsummary(lasso[['2020 LWD']], coef_map = cm, statistic = 'conf.int', gof_map = gm, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2020 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2012-2016-2020-ordinal-lasso
+#| tbl-cap: Predictors of white identity in 2012, 2016, and 2020
+
+model <- list(
+    '2012 ANES' = lasso[['2012']],
+    '2016 ANES' = lasso[['2016']],
+    '2020 ANES' = lasso[['2020']]
+)
+rows <- tribble(~term, ~`2012 ANES`, ~`2016 ANES`, ~`2020 ANES`, 'Economic', '', '', '','Non-material', '', '', '', 'Demographics', '', '', '', 'Thresholds', '','', '')
+attr(rows, 'position') <- c(1, 13, 22, 31)
+
+modelsummary(model, coef_map = cm, statistic = 'conf.int', gof_map = gm, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.' ,'Data Source: 2012, 2016, and 2020 American National Election Study.'))
+```

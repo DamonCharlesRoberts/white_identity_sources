@@ -9,7 +9,7 @@
     #* Create list object
 anes_2020 = list()
     #* Load dataset
-anes_2020[['original']] = read_dta('../data/anes-2020/anes_2020_original.dta')
+anes_2020[['original']] = read_dta('../../data/anes-2020/anes_2020_original.dta')
 
 # Clean the data
 anes_2020[['cleaned']] = anes_2020[['original']] |>
@@ -52,6 +52,10 @@ anes_2020[['cleaned']] = anes_2020[['original']] |>
         #** Coded as: V201511x - 1 < highschool, 2 hs, 3 some post-hs, 4 Bachelors, 5 graduate, < 1 Missing not asked, etc.
         #** Recoded to: edu - 1 < highschool, 2 hs, 3 some post-hs, 4 Bachelors, 5 graduate, NA = missing, not asked, etc
         edu = ifelse(V201511x <= 0, NA, V201511x),
+    #* income - Income
+        #** Coded as: V202468x - < 1 Missing, not asked, etc
+        #** Recoded to: NA = < 1 Missing, not asked, etc
+        income = ifelse(V202468x >= 1, V202468x, NA),
     #* losejob - Worried about losing job
         #** Coded as: V201540 - 1 not at all - 5 extremely worried, < 1 missing, not asked, etc
         #** Recoded to: losejob - -2 = not at all - 2  = extremely worried, NA = missing, not asked, etc
@@ -147,4 +151,4 @@ anes_2020[['cleaned']] = anes_2020[['original']] |>
     )
 
 # Save the clean data
-write.csv(anes_2020[['cleaned']], '../data/anes-2020/anes-2020-updated.csv')
+write.csv(anes_2020[['cleaned']], '../../data/anes-2020/anes-2020-updated.csv')

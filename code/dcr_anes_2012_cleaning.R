@@ -14,7 +14,7 @@ box::use(
     #* create list object
 anes_2012 = list()
     #* Load original ANES file ----
-anes_2012[['original']] = read_dta('../data/anes-2012/anes-2012.dta')
+anes_2012[['original']] = read_dta('../../data/anes-2012/anes-2012.dta')
 # Cleaning ----
 anes_2012[['clean']] = anes_2012[['original']] |>
     #* Filter dataset to include only white respondents ----
@@ -56,6 +56,10 @@ anes_2012[['clean']] = anes_2012[['original']] |>
         #** Coded as: dem_edugroup_x - 1 < highschool, 2 hs, 3 some post-hs, 4 Bachelors, 5 graduate, < 1 Missing not asked, etc.
         #** Recoded to: edu - 1 < highschool, 2 hs, 3 some post-hs, 4 Bachelors, 5 graduate, NA = missing, not asked, etc
         edu = ifelse(dem_edugroup_x <= 0, NA, dem_edugroup_x),
+    #* income - Income
+        #** Coded as: incgroup_prepost_x - < 1 Missing, not asked, etc
+        #** Recoded to: NA < 1 Missing, not asked, etc
+        income = ifelse(incgroup_prepost_x >= 1, incgroup_prepost_x, NA),
     #* losejob - Worried about losing job
         #** Coded as: dem_losejob - 1 not at all - 5 extremely worried, < 1 missing, not asked, etc
         #** Recoded to: losejob - -2 = not at all - 2  = extremely worried, NA = missing, not asked, etc
@@ -159,4 +163,4 @@ anes_2012[['clean']] = anes_2012[['original']] |>
     )
 
 # Save data
-write.csv(anes_2012[['clean']], '../data/anes-2012/anes-2012-updated.csv')
+write.csv(anes_2012[['clean']], '../../data/anes-2012/anes-2012-updated.csv')
