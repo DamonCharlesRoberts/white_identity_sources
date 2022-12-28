@@ -22,7 +22,11 @@
     "peacock.color": "#f2f2f2",
     "cSpell.enableFiletypes": [
         "bibtex",
+        "ignore",
         "quarto",
-        "r"
-    ]
+        "r",
+        "tex"
+    ],
+    "r.rpath.linux": "/home/damoncroberts/miniconda3/envs/wid_corr/bin/R",
+    "r.lsp.promptToInstall": false
 }

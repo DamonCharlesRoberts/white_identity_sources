@@ -53,9 +53,9 @@ anes_2016[['clean']] = anes_2016[['original']] |>
         #** Recoded to: 1 = < high school - 16 = Doctorate degree, NA = missing, not asked, etc
     edu = ifelse(V161270 <= 0, NA, V161270),
     #* income - Income
-        #** Coded as: V162309x - < 1 Missing, not asked, etc
+        #** Coded as: V161361x - < 1 Missing, not asked, etc
         #** Recoded to: NA = Missing, not asked, etc
-    income = ifelse(V162309x >= 1, V162309x, NA),
+    income = ifelse(V161361x >= 1, V161361x, NA),
     #* losejob - Worried about losing job
         #** Coded as: V161297 - 1 not at all - 5 extremely worried, < 1 missing, not asked, etc
         #** Recoded to: losejob - -2 = not at all - 2  = extremely worried, NA = missing, not asked, etc
