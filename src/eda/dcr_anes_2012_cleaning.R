@@ -2,21 +2,25 @@
 
 # Notes: ----
     #* Description: Cleaning script for the 2012 ANES ----
-    #* Updated: 2022-10-01 ----
+    #* Updated: 2023-06-26 ----
     #* Updated by: dcr -----
 
 # Setup: -----
     #* Modularly load packages -----
 box::use(
     haven = haven[read_dta],
-    dplyr = dplyr[mutate, filter, case_when]
+    dplyr = dplyr[
+      case_when
+      , filter
+      , mutate
+    ]
 )
     #* create list object
-anes_2012 = list()
+anes_2012 <- list()
     #* Load original ANES file ----
-anes_2012[['original']] = read_dta('../../data/anes-2012/anes-2012.dta')
+anes_2012[["original"]] <- read_dta("../../../data/original/anes_2012/anes-2012.dta")
 # Cleaning ----
-anes_2012[['clean']] = anes_2012[['original']] |>
+anes_2012[["clean"]] <- anes_2012[["original"]] |>
     #* Filter dataset to include only white respondents ----
     filter(dem_raceeth_x == 1) |>
     mutate(
@@ -163,4 +167,4 @@ anes_2012[['clean']] = anes_2012[['original']] |>
     )
 
 # Save data
-write.csv(anes_2012[['clean']], '../../data/anes-2012/anes-2012-updated.csv')
+write.csv(anes_2012[["clean"]], '../../../data/clean/anes_2012_updated.csv')

@@ -6,13 +6,22 @@
     #* Updated by: dcr 
 
 # Setup
+    #* Modularly load packages -----
+box::use(
+    haven = haven[read_dta],
+    dplyr = dplyr[
+      case_when
+      , filter
+      , mutate
+    ]
+)
     #* create list object
-anes_2016 = list()
+anes_2016 <- list()
     #* load dataset
-anes_2016[['original']] = read_dta('../../data/anes-2016/anes-2016.dta')
+anes_2016[["original"]] <- read_dta("../../../data/original/anes_2016/anes-2016.dta")
 
 # Cleaning
-anes_2016[['clean']] = anes_2016[['original']] |>
+anes_2016[["clean"]] <- anes_2016[["original"]] |>
     #* Filter only white respondents
     filter(V161310x == 1) |>
     mutate(
@@ -168,4 +177,4 @@ anes_2016[['clean']] = anes_2016[['original']] |>
     )
 
 # Save clean data
-write.csv(anes_2016[['clean']], '../../data/anes-2016/anes-2016-updated.csv')
+write.csv(anes_2016[["clean"]], "../../../data/clean/anes_2016_updated.csv")
