@@ -32,7 +32,7 @@ bibliography: "../assets/wid.bib"
 format:
   hikmah-pdf:
     cite-method: citeproc
-    latex-output-dir: ../out/submissions/bjps
+    latex-output-dir: ../out/
     filters:
     - "_extensions/andrewheiss/wordcount/citeproc.lua"
     - "_extensions/andrewheiss/wordcount/wordcount.lua"
