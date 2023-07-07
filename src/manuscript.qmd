@@ -119,11 +119,9 @@ A common source of data and of measures for researchers in the United States is 
 
 # Identity and white political identity
 
-One perspective on what explains racial identity among Whites in the United States are that they are responding to threats to their economic status and power. Realistic Conflict Theory suggests that a racial identity and racial prejudice come as a response to a collective concern among members of a particular racial group about the loss of economic influence and status a group holds relative to other racial groups [@blumer_1958_psr;@bobo_hutchings_1996_asr]. Some work in support of this perspective sees White racial identity as a response to concerns about increased job market competition through immigration [@pardos-prado_xena_2019]. Other work finds support for this argument in lab experiments [@perez_et-al_2022_pp] and in surveys [@lindsay_2023_apr]. In one of the most thorough treatments on the use of racial identity by Whites in politics, @jardina_2019_cup includes indicators of economic status and power in the primary model to predict White political identity. If this perspective holds, we might expect that in times of economic hardship, Whites may be most sensitive to economic threats as the collective and the individual see economics as most salient to them.
+One perspective on what explains racial identity among Whites in the United States are that they are responding to threats to their economic status and power. Realistic Conflict Theory suggests that a racial identity and racial prejudice come as a response to a collective concern among members of a particular racial group about the loss of economic influence and status a group holds relative to other racial groups [@blumer_1958_psr;@bobo_hutchings_1996_asr]. Some evidence suggests that Whites living in areas with shrinking job opportunities respond to this with an increased desire to protect the interests of their racial confederates [@baccini_weymouth_2021_apsr]. Others have experimental evidence supporting this perspective that White identity is motivated by material concerns [@perez_et-al_2022_pp]. Further, @jardina_2019_cup who provides one of the most comprehensive treatments of conceptualizing, measuring, and examining the outcomes of White identity in politics includes indicators of economic status and power in the primary model.
 
-Social identity theory, and its offshoots, would suggest that Whites expressing a racial identity are responding to political, cultural, and societal threats. While these threats are a bit more hard to define, there are a number of examples of Whites expressing prejudice towards other racial groups in response to these sorts of challenges to their power. @tesler_2016 demonstrates that Whites heavily racialized American politics in response to Barack Obama's ascention to the White House. Other work demonstrates that the saliency and reprocussions of aligning with competing racial groups drove non-White political candidates to distance themselves from their racial confederates in an attempt to appease Whites [@stephens-dougan_2020]. Some pundits on Fox News suggest that Whites are in direct competition for jobs with immigrants from South and Central America. Despite these claims, some evidence suggests that Whites' hostility directed toward non-White immigrant groups depends on the degree to which they assimilate [@green_staerkle_2013; see also @hainmueller_hopkins_2014]. In terms of attitudes oriented toward the in-group, @dawson_1994_pup argues that Black Americans hold a strong racial identity that supercedes their class-based identity due to the persistent focus on Black individual's race in their personal and political life. For Whites, their racial identity has long been central to their behavior and the way in which they mobilize to shape legal and political institutions to maintain power [@rile-hayward_2013].
-
-We may also see that economic or political threat may appear differently for partisans and for female respondents. Recent evidence suggests that racial attitudes are guided by partisanship [@engelhardt_2021_bjps]. Specifically, some evidence suggests that White Democrats are much more sensitive to their racial identity than White Republicans due to the higher amount of racial heterogeneity within the Democratic party. This may mean for White Democrats that they have more exposure to intergroup competition for power within the party (such as the choice to support Hillary Clinton versus Barack Obama) and may have higher White identification as a result. The second way that these threats may matter more or less for Whites is on the dimension of sex. Gender-based differences in economic influence and status remains quite high. We therefore may expect that female individuals are more sensitive to economic threats than their male counterparts. In addition to the ombnibus model, I also include two additional models where I split the samples along the dimension of partisanship (including leaners in each) and on the dimension of sex.
+Social identity theory, and its offshoots, would suggest an alternative perspective: that Whites expressing a racial identity are responding to political, cultural, and societal threats. While these threats are a bit more hard to define, there are a number of examples of Whites expressing prejudice towards other racial groups in response to these sorts of challenges to their power. @tesler_2016 demonstrates that Whites heavily racialized American politics in response to Barack Obama's ascention to the White House. Other work demonstrates that the saliency and reprocussions of aligning with competing racial groups drove non-White political candidates to distance themselves from their racial confederates in an attempt to appease Whites [@stephens-dougan_2020]. Some pundits on Fox News suggest that Whites are in direct competition for jobs with immigrants from South and Central America. Despite these claims, some evidence suggests that Whites' hostility directed toward non-White immigrant groups depends on the degree to which they assimilate [@green_staerkle_2013; see also @hainmueller_hopkins_2014]. In terms of attitudes oriented toward the in-group, @dawson_1994_pup argues that Black Americans hold a strong racial identity that supercedes their class-based identity due to the persistent focus on Black individual's race in their personal and political life. For Whites, their racial identity has long been central to their behavior and the way in which they mobilize to shape legal and political institutions to maintain power [@rile-hayward_2013].
 
 # Political versus economic threats
 
@@ -345,6 +343,612 @@ Examining the figure, we see that none of the proxies for economic threat consis
 
 For political threats, we see that in both instances where Obama was in the White House that those who reported being concerned with "new lifestyles" as well as those with a higher score on the racial resentment measures were associated with having higher white political identities. When Trump was in the White House, we see that those who felt that the government was biased against Whites, that Whites were discriminated against, and who scored higher on the racial resentment measures all reported higher levels of White political identity. 
 
+An additional question worth examining is that economic or political threat may appear differently for partisans and for female respondents. Recent evidence suggests that racial attitudes are guided by partisanship [@engelhardt_2021_bjps]. Specifically, some evidence suggests that White Democrats are much more sensitive to their racial identity than White Republicans due to the higher amount of racial heterogeneity within the Democratic party. This may mean for White Democrats that they have more exposure to intergroup competition for power within the party (such as the choice to support Hillary Clinton versus Barack Obama) and may have higher White identification as a result. The second way that these threats may matter more or less for Whites is on the dimension of sex. Gender-based differences in economic influence and status remains quite high. We therefore may expect that female individuals are more sensitive to economic threats than their male counterparts. In addition to the ombnibus model, I also include two additional models where I split the samples along the dimension of partisanship (including leaners in each) and on the dimension of sex.
+
+```{r}
+#| label: fig-2012-2016-2020-female-male-lasso
+#| layout-ncol: 2
+#| fig-cap: Economic factors are weak predictors of white identity
+#| fig-subcap:
+#|   - Female, Economic
+#|   - Female, Political
+#|   - Male, Economic
+#|   - Female, Economicß
+# Graphs
+  #* Tidyfy posterior draws
+    #** 2012
+lasso[["2012_female_tidy"]] <- parameters(
+  lasso[["2012_female"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2012") |>
+  filter(!is.na(term))
+lasso[["2012_male_tidy"]] <- parameters(
+  lasso[["2012_male"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2012") |>
+  filter(!is.na(term))
+    #** 2016
+  lasso[["2016_female_tidy"]] <- parameters(
+  lasso[["2016_female"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2016") |>
+  filter(!is.na(term))
+lasso[["2016_male_tidy"]] <- parameters(
+  lasso[["2016_male"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2016") |>
+  filter(!is.na(term))
+    #** 2020
+lasso[["2020_female_tidy"]] <- parameters(
+  lasso[["2020_female"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2020") |>
+  filter(!is.na(term))
+lasso[["2020_male_tidy"]] <- parameters(
+  lasso[["2020_male"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2020") |>
+  filter(!is.na(term))
+
+lasso[['female_tidy']] <- rbind(
+  lasso[['2012_female_tidy']]
+  , lasso[['2016_female_tidy']]
+  , lasso[['2020_female_tidy']]
+) |> # append the three models' results together
+  mutate(
+    term = case_when(
+      term == 'b_rboff' ~ 'Retrospective better off'
+      , term == 'b_epast' ~ 'Economy better'
+      , term == 'b_unpast' ~ 'Unemployment better'
+      , term == 'b_edu' ~ 'Education'
+      , term == 'b_income' ~ 'Income'
+      , term == 'b_losejob' ~ 'Worried about losing job'
+      , term == 'b_ecfamily' ~ 'Worried about family finances'
+      , term == 'b_ecjob' ~ 'Know someone lost job'
+      , term == 'b_tradbreak' ~ 'New lifestyles breaking society'
+      , term == 'b_govbias' ~ 'Gov. biased against whites'
+      , term == 'b_inflwhite' ~ 'whites influence politics'
+      , term == 'b_whitediscrim' ~ 'whites are discriminated against'
+      , term == 'b_raceResent' ~ 'Racial resentment'
+      , term == 'b_pid' ~ 'Party ID'
+    ), # rename the parameters
+    term = factor(
+      term
+      , levels = c(
+        'Retrospective better off'
+        , 'Economy better'
+        , 'Unemployment better'
+        , 'Education'
+        , 'Income'
+        , 'Worried about losing job'
+        , 'Worried about family finances'
+        , 'Know someone lost job'
+        , 'New lifestyles breaking society'
+        , 'Gov. biased against whites'
+        , 'whites influence politics'
+        , 'whites are discriminated against'
+        , 'Racial resentment'
+        , 'Party ID'
+      )
+    ) # convert it to a factor variable
+  ) |> 
+  filter(!is.na(term)) # get rid of na rows
+lasso[['male_tidy']] <- rbind(
+  lasso[['2012_male_tidy']]
+  , lasso[['2016_male_tidy']]
+  , lasso[['2020_male_tidy']]
+) |> # append the three models' results together
+  mutate(
+    term = case_when(
+      term == 'b_rboff' ~ 'Retrospective better off'
+      , term == 'b_epast' ~ 'Economy better'
+      , term == 'b_unpast' ~ 'Unemployment better'
+      , term == 'b_edu' ~ 'Education'
+      , term == 'b_income' ~ 'Income'
+      , term == 'b_losejob' ~ 'Worried about losing job'
+      , term == 'b_ecfamily' ~ 'Worried about family finances'
+      , term == 'b_ecjob' ~ 'Know someone lost job'
+      , term == 'b_tradbreak' ~ 'New lifestyles breaking society'
+      , term == 'b_govbias' ~ 'Gov. biased against whites'
+      , term == 'b_inflwhite' ~ 'whites influence politics'
+      , term == 'b_whitediscrim' ~ 'whites are discriminated against'
+      , term == 'b_raceResent' ~ 'Racial resentment'
+      , term == 'b_pid' ~ 'Party ID'
+    ), # rename the parameters
+    term = factor(
+      term
+      , levels = c(
+        'Retrospective better off'
+        , 'Economy better'
+        , 'Unemployment better'
+        , 'Education'
+        , 'Income'
+        , 'Worried about losing job'
+        , 'Worried about family finances'
+        , 'Know someone lost job'
+        , 'New lifestyles breaking society'
+        , 'Gov. biased against whites'
+        , 'whites influence politics'
+        , 'whites are discriminated against'
+        , 'Racial resentment'
+        , 'Party ID'
+      )
+    ) # convert it to a factor variable
+  ) |> 
+  filter(!is.na(term)) # get rid of na rows
+    #** make a data.frame of results for the econ predictors
+lasso[["female_tidy_econ"]] <- lasso[["female_tidy"]] |>
+  filter(
+    term == "Retrospective better off" | term == "Economy better" | 
+    term == "Unemployment better" | term == "Education" | term == "Income" | 
+    term == "Worried about losing job" | term == "Wrroeid about family finances" |
+    term == "Know someone lost job"
+  )
+    #** make a data.frame of results for the political predictors
+lasso[["female_tidy_poli"]] <- lasso[["female_tidy"]] |>
+  filter(
+    term == "New lifestyles breaking society" | term == "Gov. biased against whites" |
+    term == "whites influence politics" | term == "whites are discriminated against" |
+    term == "Racial resentment"
+  )
+lasso[["male_tidy_econ"]] <- lasso[["male_tidy"]] |>
+  filter(
+    term == "Retrospective better off" | term == "Economy better" | 
+    term == "Unemployment better" | term == "Education" | term == "Income" | 
+    term == "Worried about losing job" | term == "Wrroeid about family finances" |
+    term == "Know someone lost job"
+  )
+    #** make a data.frame of results for the political predictors
+lasso[["male_tidy_poli"]] <- lasso[["male_tidy"]] |>
+  filter(
+    term == "New lifestyles breaking society" | term == "Gov. biased against whites" |
+    term == "whites influence politics" | term == "whites are discriminated against" |
+    term == "Racial resentment"
+  )
+female_econ <- ggplot(
+  data = lasso[['female_tidy_econ']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+  #* plot for political predictors
+female_poli <- ggplot(
+  data = lasso[['female_tidy_poli']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+male_econ <- ggplot(
+  data = lasso[['male_tidy_econ']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+  #* plot for political predictors
+male_poli <- ggplot(
+  data = lasso[['male_tidy_poli']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+
+female_econ
+female_poli
+male_econ
+male_poli
+```
+
+```{r}
+#| label: fig-2012-2016-2020-pid-lasso
+#| layout-ncol: 2
+#| fig-cap: Economic factors are weak predictors of white identity
+#| fig-subcap:
+#|   - Republican, Economic
+#|   - Republican, Political
+#|   - Democrat, Economic
+#|   - Democrat, Economic
+# Graphs
+  #* Tidyfy posterior draws
+    #** 2012
+lasso[["2012_republican_tidy"]] <- parameters(
+  lasso[["2012_republican"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2012") |>
+  filter(!is.na(term))
+lasso[["2012_democrat_tidy"]] <- parameters(
+  lasso[["2012_democrat"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2012") |>
+  filter(!is.na(term))
+    #** 2016
+  lasso[["2016_republican_tidy"]] <- parameters(
+  lasso[["2016_republican"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2016") |>
+  filter(!is.na(term))
+lasso[["2016_democrat_tidy"]] <- parameters(
+  lasso[["2016_democrat"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2016") |>
+  filter(!is.na(term))
+    #** 2020
+lasso[["2020_republican_tidy"]] <- parameters(
+  lasso[["2020_republican"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2020") |>
+  filter(!is.na(term))
+lasso[["2020_democrat_tidy"]] <- parameters(
+  lasso[["2020_democrat"]]
+  , conf.int = 0.95
+  , verbose = FALSE
+) |>
+  standardize_names(style = "broom") |>
+  data.frame() |>
+  mutate(model = "2020") |>
+  filter(!is.na(term))
+
+lasso[['republican_tidy']] <- rbind(
+  lasso[['2012_republican_tidy']]
+  , lasso[['2016_republican_tidy']]
+  , lasso[['2020_republican_tidy']]
+) |> # append the three models' results together
+  mutate(
+    term = case_when(
+      term == 'b_rboff' ~ 'Retrospective better off'
+      , term == 'b_epast' ~ 'Economy better'
+      , term == 'b_unpast' ~ 'Unemployment better'
+      , term == 'b_edu' ~ 'Education'
+      , term == 'b_income' ~ 'Income'
+      , term == 'b_losejob' ~ 'Worried about losing job'
+      , term == 'b_ecfamily' ~ 'Worried about family finances'
+      , term == 'b_ecjob' ~ 'Know someone lost job'
+      , term == 'b_tradbreak' ~ 'New lifestyles breaking society'
+      , term == 'b_govbias' ~ 'Gov. biased against whites'
+      , term == 'b_inflwhite' ~ 'whites influence politics'
+      , term == 'b_whitediscrim' ~ 'whites are discriminated against'
+      , term == 'b_raceResent' ~ 'Racial resentment'
+      , term == 'b_female' ~ 'Female'
+    ), # rename the parameters
+    term = factor(
+      term
+      , levels = c(
+        'Retrospective better off'
+        , 'Economy better'
+        , 'Unemployment better'
+        , 'Education'
+        , 'Income'
+        , 'Worried about losing job'
+        , 'Worried about family finances'
+        , 'Know someone lost job'
+        , 'New lifestyles breaking society'
+        , 'Gov. biased against whites'
+        , 'whites influence politics'
+        , 'whites are discriminated against'
+        , 'Racial resentment'
+        , 'Female'
+      )
+    ) # convert it to a factor variable
+  ) |> 
+  filter(!is.na(term)) # get rid of na rows
+lasso[['democrat_tidy']] <- rbind(
+  lasso[['2012_democrat_tidy']]
+  , lasso[['2016_democrat_tidy']]
+  , lasso[['2020_democrat_tidy']]
+) |> # append the three models' results together
+  mutate(
+    term = case_when(
+      term == 'b_rboff' ~ 'Retrospective better off'
+      , term == 'b_epast' ~ 'Economy better'
+      , term == 'b_unpast' ~ 'Unemployment better'
+      , term == 'b_edu' ~ 'Education'
+      , term == 'b_income' ~ 'Income'
+      , term == 'b_losejob' ~ 'Worried about losing job'
+      , term == 'b_ecfamily' ~ 'Worried about family finances'
+      , term == 'b_ecjob' ~ 'Know someone lost job'
+      , term == 'b_tradbreak' ~ 'New lifestyles breaking society'
+      , term == 'b_govbias' ~ 'Gov. biased against whites'
+      , term == 'b_inflwhite' ~ 'whites influence politics'
+      , term == 'b_whitediscrim' ~ 'whites are discriminated against'
+      , term == 'b_raceResent' ~ 'Racial resentment'
+      , term == 'b_female' ~ 'Female'
+    ), # rename the parameters
+    term = factor(
+      term
+      , levels = c(
+        'Retrospective better off'
+        , 'Economy better'
+        , 'Unemployment better'
+        , 'Education'
+        , 'Income'
+        , 'Worried about losing job'
+        , 'Worried about family finances'
+        , 'Know someone lost job'
+        , 'New lifestyles breaking society'
+        , 'Gov. biased against whites'
+        , 'whites influence politics'
+        , 'whites are discriminated against'
+        , 'Racial resentment'
+        , 'Female'
+      )
+    ) # convert it to a factor variable
+  ) |> 
+  filter(!is.na(term)) # get rid of na rows
+    #** make a data.frame of results for the econ predictors
+lasso[["republican_tidy_econ"]] <- lasso[["republican_tidy"]] |>
+  filter(
+    term == "Retrospective better off" | term == "Economy better" | 
+    term == "Unemployment better" | term == "Education" | term == "Income" | 
+    term == "Worried about losing job" | term == "Wrroeid about family finances" |
+    term == "Know someone lost job"
+  )
+    #** make a data.frame of results for the political predictors
+lasso[["republican_tidy_poli"]] <- lasso[["republican_tidy"]] |>
+  filter(
+    term == "New lifestyles breaking society" | term == "Gov. biased against whites" |
+    term == "whites influence politics" | term == "whites are discriminated against" |
+    term == "Racial resentment"
+  )
+lasso[["democrat_tidy_econ"]] <- lasso[["democrat_tidy"]] |>
+  filter(
+    term == "Retrospective better off" | term == "Economy better" | 
+    term == "Unemployment better" | term == "Education" | term == "Income" | 
+    term == "Worried about losing job" | term == "Wrroeid about family finances" |
+    term == "Know someone lost job"
+  )
+    #** make a data.frame of results for the political predictors
+lasso[["democrat_tidy_poli"]] <- lasso[["democrat_tidy"]] |>
+  filter(
+    term == "New lifestyles breaking society" | term == "Gov. biased against whites" |
+    term == "whites influence politics" | term == "whites are discriminated against" |
+    term == "Racial resentment"
+  )
+republican_econ <- ggplot(
+  data = lasso[['republican_tidy_econ']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+  #* plot for political predictors
+republican_poli <- ggplot(
+  data = lasso[['republican_tidy_poli']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+democrat_econ <- ggplot(
+  data = lasso[['democrat_tidy_econ']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+  #* plot for political predictors
+democrat_poli <- ggplot(
+  data = lasso[['democrat_tidy_poli']]
+  , aes(
+    y = term
+    , x = estimate
+    , xmin = conf.low
+    , xmax = conf.high
+    , shape = factor(model)
+  )
+) +
+  geom_pointinterval(
+    position = position_dodge(width = 0.6)
+    , size = 4
+) +
+  geom_vline(
+    xintercept = 0
+    , linetype = 2
+) +
+  scale_y_discrete(limits = rev) +
+  theme_minimal() +
+  labs(
+    shape = 'Model'
+    , x = 'Estimate'
+    , y = ''
+    , caption = 'Data Source: 2012, 2016, 2020 ANES.\n Dots are median draw from posterior distribution.\n Bars represent 95% credible intervals.'
+) + 
+  theme(text=element_text(size=12, family = 'sans'))
+
+republican_econ
+republican_poli
+democrat_econ
+democrat_poli
+```
+
+We see in both @fig-2012-2016-2020-female-male-lasso and @fig-2012-2016-2020-pid-lasso that indicators of economic and political threat do not have much substantial variation between male and female respondents and Republican and Democrat respondents. The full table of results for the model are included in @tbl-2012-gender-lasso, @tbl-2016-gender-lasso, @tbl-2020-gender-lasso, @tbl-2012-pid-lasso, @tbl-2016-pid-lasso, and @tbl-2020-pid-lasso in the Supplimentary Materials.
+
 # Discussion and conclusions
 
 Overall, these results suggest that common proxies of economic threat are at least inconsistent measures of White identity. Even in a time where the economy is recovering from a collapse, more proxies of political threat seemed to predict White identity. When a White president well-known for his penchance for racial dog-whistles takes office, we see support for the idea that White grievance politics was at a high -- high those who felt that political institutions and that the direction of society was turning away from the racial status quo were those that reported their racial identity as more central to who they are.
@@ -555,45 +1159,131 @@ gm <- list(
 )
 
 cm <- c('b_rboff' = 'Retrospective better off', 'b_epast' = 'Economy better', 'b_unpast' = 'Unemployment better', 'b_edu' = 'Education', 'b_income' = 'Income', 'b_losejob' = 'Worried about losing job', 'b_ecfamily' = 'Worried about family finances', 'b_ecjob' = 'Know someone lost job', 'b_tradbreak' = 'New lifestyles breaking society', 'b_govbias' = 'Gov. biased against whites', 'b_inflwhite' = 'whites influence politics', 'b_whitediscrim' = 'whites are discriminated against', 'b_raceResent' = 'Racial resentment', 'b_pid' = 'Party ID', 'b_female' = 'Female', 'b_Intercept[1]' = 'Threshold 1', 'b_Intercept[2]' = 'Threshold 2', 'b_Intercept[3]' = 'Threshold 3', 'b_Intercept[4]' = 'Threshold 4')
+
+cm_gender <- c('b_rboff' = 'Retrospective better off', 'b_epast' = 'Economy better', 'b_unpast' = 'Unemployment better', 'b_edu' = 'Education', 'b_income' = 'Income', 'b_losejob' = 'Worried about losing job', 'b_ecfamily' = 'Worried about family finances', 'b_ecjob' = 'Know someone lost job', 'b_tradbreak' = 'New lifestyles breaking society', 'b_govbias' = 'Gov. biased against whites', 'b_inflwhite' = 'whites influence politics', 'b_whitediscrim' = 'whites are discriminated against', 'b_raceResent' = 'Racial resentment', 'b_pid' = 'Party ID', 'b_Intercept[1]' = 'Threshold 1', 'b_Intercept[2]' = 'Threshold 2', 'b_Intercept[3]' = 'Threshold 3', 'b_Intercept[4]' = 'Threshold 4')
+
+cm_pid <- c('b_rboff' = 'Retrospective better off', 'b_epast' = 'Economy better', 'b_unpast' = 'Unemployment better', 'b_edu' = 'Education', 'b_income' = 'Income', 'b_losejob' = 'Worried about losing job', 'b_ecfamily' = 'Worried about family finances', 'b_ecjob' = 'Know someone lost job', 'b_tradbreak' = 'New lifestyles breaking society', 'b_govbias' = 'Gov. biased against whites', 'b_inflwhite' = 'whites influence politics', 'b_whitediscrim' = 'whites are discriminated against', 'b_raceResent' = 'Racial resentment', 'b_female' = 'Female', 'b_Intercept[1]' = 'Threshold 1', 'b_Intercept[2]' = 'Threshold 2', 'b_Intercept[3]' = 'Threshold 3', 'b_Intercept[4]' = 'Threshold 4')
 ```
 
 ```{r}
 #| label: tbl-2012-lasso-simple
 #| tbl-cap: Predictors of white Identity in 2012
 model_2012 <- list(
-  '2012 LWD' = lasso[["2012_simple"]],
-  '2012' = lasso[["2012_ordinal"]]
+  "2012 LWD" = lasso[["2012_simple"]]
+  , "2012" = lasso[["2012_ordinal"]]
 )
 rows <- tribble(~term, ~`2012 LWD`, ~`2012`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
 attr(rows, 'position') <- c(1, 18, 27, 32)
 
-modelsummary(model_2012, coef_map = cm, statistic = 'conf.int', gof_map = NA, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2012 American National Election Study.'))
+modelsummary(model_2012, coef_map = cm, statistic = 'conf.int', gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2012 American National Election Study.'))
 
+```
+
+```{r}
+#| label: tbl-2012-gender-lasso
+#| tbl-cap: Predictors of Whit Identity in 2012 conditional on gender
+
+model_2012_gender <- list(
+  "2012 Female" = lasso[["2012_female"]]
+  , "2012 Male" = lasso[["2012_male"]]
+)
+rows <- tribble(~term, ~`2012 Female`, ~`2012 Male`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
+attr(rows, 'position') <- c(1, 18, 27, 30)
+
+modelsummary(model_2012_gender, coef_map = cm_gender, statistic = "conf.int", gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2012 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2012-pid-lasso
+#| tbl-cap: Predictors of Whit Identity in 2012 conditional on partisanship
+
+model_2012_pid <- list(
+  "2012 Republican" = lasso[["2012_republican"]]
+  , "2012 Democrat" = lasso[["2012_democrat"]]
+)
+rows <- tribble(~term, ~`2012 Republican`, ~`2012 Democrat`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
+attr(rows, 'position') <- c(1, 18, 27, 30)
+
+modelsummary(model_2012_pid, coef_map = cm_pid, statistic = "conf.int", gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2012 American National Election Study.'))
 ```
 
 ```{r}
 #| label: tbl-2016-lasso-simple
 #| tbl-cap: Predictors of white identity in 2016
 model_2016 <- list(
-  '2016 LWD' = lasso[["2016_simple"]],
-  '2016' = lasso[["2016_ordinal"]]
+  "2016 LWD" = lasso[["2016_simple"]]
+  , "2016" = lasso[["2016_ordinal"]]
 )
 rows <- tribble(~term, ~`2016 LWD`, ~`2016`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
 attr(rows, 'position') <- c(1, 18, 27, 32)
 
-modelsummary(model_2016, coef_map = cm, statistic = 'conf.int', gof_map = NA, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2016 American National Election Study.'))
-
+modelsummary(model_2016, coef_map = cm, statistic = 'conf.int', gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2016 American National Election Study.'))
 ```
 
+```{r}
+#| label: tbl-2016-gender-lasso
+#| tbl-cap: Predictors of Whit Identity in 2016 conditional on gender
+
+model_2016_gender <- list(
+  "2016 Female" = lasso[["2016_female"]]
+  , "2016 Male" = lasso[["2016_male"]]
+)
+rows <- tribble(~term, ~`2016 Female`, ~`2016 Male`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
+attr(rows, 'position') <- c(1, 18, 27, 30)
+
+modelsummary(model_2016_gender, coef_map = cm_gender, statistic = "conf.int", gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2016 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2016-pid-lasso
+#| tbl-cap: Predictors of Whit Identity in 2016 conditional on partisanship
+
+model_2016_pid <- list(
+  "2016 Republican" = lasso[["2016_republican"]]
+  , "2016 Democrat" = lasso[["2016_democrat"]]
+)
+rows <- tribble(~term, ~`2016 Republican`, ~`2016 Democrat`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
+attr(rows, 'position') <- c(1, 18, 27, 30)
+
+modelsummary(model_2016_pid, coef_map = cm_pid, statistic = "conf.int", gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2016 American National Election Study.'))
+```
 ```{r}
 #| label: tbl-2020-lasso-simple
 #| tbl-cap: Predictors of white identity in 2020
 model_2020 <- list(
-  '2020 LWD' = lasso[["2020_simple"]],
-  '2020' = lasso[["2020_ordinal"]]
+  "2020 LWD" = lasso[["2020_simple"]]
+  , "2020" = lasso[["2020_ordinal"]]
 )
 rows <- tribble(~term, ~`2020 LWD`, ~`2020`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
 attr(rows, 'position') <- c(1, 18, 25, 30)
 
-modelsummary(model_2020, coef_map = cm, statistic = 'conf.int', gof_map = NA, add_rows = rows, notes = list('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2020 American National Election Study.'))
+modelsummary(model_2020, coef_map = cm, statistic = 'conf.int', gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2020 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2020-gender-lasso
+#| tbl-cap: Predictors of Whit Identity in 2020 conditional on gender
+
+model_2020_gender <- list(
+  "2020 Female" = lasso[["2020_female"]]
+  , "2020 Male" = lasso[["2020_male"]]
+)
+rows <- tribble(~term, ~`2020 Female`, ~`2020 Male`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
+attr(rows, 'position') <- c(1, 18, 27, 30)
+
+modelsummary(model_2020_gender, coef_map = cm_gender, statistic = "conf.int", gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2020 American National Election Study.'))
+```
+
+```{r}
+#| label: tbl-2020-pid-lasso
+#| tbl-cap: Predictors of Whit Identity in 2012 conditional on partisanship
+
+model_2020_pid <- list(
+  "2020 Republican" = lasso[["2020_republican"]]
+  , "2020 Democrat" = lasso[["2020_democrat"]]
+)
+rows <- tribble(~term, ~`2020 Republican`, ~`2020 Democrat`, 'Economic', '', '', 'Non-material', '', '', 'Demographics', '', '', 'Thresholds', '', '')
+attr(rows, 'position') <- c(1, 18, 27, 30)
+
+modelsummary(model_2020_pid, coef_map = cm_pid, statistic = "conf.int", gof_map = NA, add_rows = rows, notes = c('Median estimate from fitted model with 6 chains and 2000 iterations.', '95 percent credible intervals in brackets.', 'Data source: 2020 American National Election Study.'))
 ```
