@@ -18,7 +18,7 @@ box::use(
     #* create list object
 anes_2012 <- list()
     #* Load original ANES file ----
-anes_2012[["original"]] <- read_dta("../../../data/original/anes_2012/anes-2012.dta")
+anes_2012[["original"]] <- read_dta("../data/original/anes_2012/anes-2012.dta")
 # Cleaning ----
 anes_2012[["clean"]] <- anes_2012[["original"]] |>
     #* Filter dataset to include only white respondents ----
@@ -167,4 +167,4 @@ anes_2012[["clean"]] <- anes_2012[["original"]] |>
     )
 
 # Save data
-write.csv(anes_2012[["clean"]], '../../../data/clean/anes_2012_updated.csv')
+write.csv(anes_2012[["clean"]], '../data/clean/anes_2012_updated.csv')

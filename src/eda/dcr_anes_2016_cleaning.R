@@ -18,7 +18,7 @@ box::use(
     #* create list object
 anes_2016 <- list()
     #* load dataset
-anes_2016[["original"]] <- read_dta("../../../data/original/anes_2016/anes-2016.dta")
+anes_2016[["original"]] <- read_dta("../data/original/anes_2016/anes-2016.dta")
 
 # Cleaning
 anes_2016[["clean"]] <- anes_2016[["original"]] |>
@@ -177,4 +177,4 @@ anes_2016[["clean"]] <- anes_2016[["original"]] |>
     )
 
 # Save clean data
-write.csv(anes_2016[["clean"]], "../../../data/clean/anes_2016_updated.csv")
+write.csv(anes_2016[["clean"]], "../data/clean/anes_2016_updated.csv")
