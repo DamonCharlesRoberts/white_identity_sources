@@ -45,7 +45,7 @@ anes_timeseries_cdf_stata13.dta
 *.tex
 comments/
 grant/
-drafts/old-drafts 
+drafts/old-drafts
 drafts/*.tex
 notes/
 *.Rproj
@@ -59,3 +59,4 @@ submissions/
 dcr_white_identity_relative_deprivation_fa_2022_files/
 *.docx
 *.rmarkdown
+/.luarc.json
