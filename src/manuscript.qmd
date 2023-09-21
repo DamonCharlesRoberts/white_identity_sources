@@ -20,7 +20,7 @@ author:
 abstract: |
     Do economic or political threats explain reported white identity? Overall, the social identity literature would suggest that white identity would increase in response to economic threats. However, a number of those that study white identity, specifically, argue that it results from concern about political influence. Considering what whiteness means historically and contemporaneously, I argue that we should expect that political threats reflect stronger associations with white identity. Using data from the 2012, 2016, and 2020 American National Election Study, I consider a single model using penalized regression containing proxies of economic and political threats. I find evidence suggesting that in the post-Trump era, white political identity is strongly associated with reported feelings of Whites’ loss of political influence as opposed to economic threats, as some suggest and may expect.
 thanks: |
-    Word count (including references): 3655. I would like to thank Jennifer Wolak for her feedback on the many drafts of this manuscript. I would also like to thank the Keller Center for the First Amendment for the research appointment that gave me the space to work on the early stages of this project. I would also like to thank Anand Sokhey and John Griffin for their advice and suggestions in the early drafts of this paper. I would also like to thank Tabitha Bonilla, Nicole Yadon, and participants and audience members of a Midwestern Political Science Association panel for which an earlier draft this idea was presented. I would also like to thank Tamar Malloy, Andrew Philips, Kathryn Schauer, Rachel O'Neal, Alexander Jensen, Komal Kaur, Andrew Engelhardt, and Madeline Mader for their encouragement and feedback at various stages of this project's development. All errors contained in this manuscript are ultimately mine.
+    Word count (including references): 3898. I would like to thank Jennifer Wolak for her feedback on the many drafts of this manuscript. I would also like to thank the Keller Center for the First Amendment for the research appointment that gave me the space to work on the early stages of this project. I would also like to thank Anand Sokhey and John Griffin for their advice and suggestions in the early drafts of this paper. I would also like to thank Tabitha Bonilla, Nicole Yadon, and participants and audience members of a Midwestern Political Science Association panel for which an earlier draft this idea was presented. I would also like to thank Tamar Malloy, Andrew Philips, Kathryn Schauer, Rachel O'Neal, Alexander Jensen, Komal Kaur, Andrew Engelhardt, and Madeline Mader for their encouragement and feedback at various stages of this project's development. All errors contained in this manuscript are ultimately mine.
 additional-info: |
   I have no known conflict of interest to disclose.
 keywords:
@@ -28,14 +28,11 @@ keywords:
   - economic threat
   - cultural threat
 date: today
-bibliography: "../assets/wid.bib"
+bibliography: "../assets/references.bib"
 format:
   hikmah-pdf:
     cite-method: citeproc
     latex-output-dir: ../out/
-    filters:
-    - "_extensions/andrewheiss/wordcount/citeproc.lua"
-    - "_extensions/andrewheiss/wordcount/wordcount.lua"
     geometry:
       - top=1in
       - bottom=1in
@@ -44,7 +41,7 @@ format:
       - heightrounded
     linestretch: 2
     fontsize: 12pt
-    appendix-style: none
+    appendix-style: default
     include-in-header:
       text: |
         \usepackage{pdflscape}
@@ -113,41 +110,42 @@ load("../data/temp/fitted_models.RData")
 
 # Introduction
 
-Do economic or political threats motivate the expression of a racial identity among Whites in politics? The existing work offers an unclear answer to this question. This note provides an omnibus test to determine not only which of these questions has more empirical support but also which among common proxies of economic and political power in the United States appear to be reliable predictors of a White individual's expression of racial identity.
+There is a growing literature suggesting that White Political Identity predicts a number of outcomes. For example evidence suggests that White Political Identity predicts support for Trump in the 2016 Presidential Election [@jardina_disavowing_2021]. The existing literature is less clear about the predictors of White Political Identity, however. I advance an argument as to why we might consider the expression of a White Political Identity to be a reflection of concerns around cultural threat as opposed to economic threat. The primary contribution of the note is that I provide an omnibus test to tease out whether cultural or economic threats are more reliable predictors of a White individual's expression of racial identity in the United States.
 
-As the American National Election Study is a long-running survey of Americans', it provides some of the most consistent measures on common political attitudes and behaviors. Using data from the 2012, 2016, and 2020 administrations of the ANES, I fit an omnibus model with penalized regression to examine the degree to which individual measures of economic and political influence explain an individual's uptake of White identity as well as to examine the degree to which changes in the political context may increase or decrease the explanatory power of these measures. From this test, I find that proxies reporting concerns about Whites' political influence are stronger explanatory factors than proxies of economic influence in the post-Trump era.
+As the American National Election Study is a long-running survey of those residing in the United States, it provides some of the most consistent measures on common political attitudes and behaviors. Using data from the 2012, 2016, and 2020 administrations of the ANES, I fit an omnibus model with penalized regression to examine the degree to which additive scales and individual measures of economic and cultural influence explain an individual's uptake of White identity as well as to examine the degree to which changes in the social context may increase or decrease the explanatory power of these measures. From this test, I find that measures reporting concerns about Whites' cultural influence are stronger explanatory factors than proxies of economic influence in the post-Trump era.
 
-# Identity and white political identity
+# Identity and White Political Identity
 
-One perspective on what explains racial identity among Whites in the United States are that they are responding to threats to their economic status and power. Realistic Conflict Theory suggests that a racial identity and racial prejudice come as a response to a collective concern among members of a particular racial group about the loss of economic influence and status a group holds relative to other racial groups [@blumer_1958_psr;@bobo_hutchings_1996_asr]. Some evidence suggests that Whites living in areas with shrinking job opportunities respond to this with an increased desire to protect the interests of their racial confederates [@baccini_weymouth_2021_apsr]. Others have experimental evidence supporting this perspective that White identity is motivated by material concerns [@perez_et-al_2022_pp]. Further, @jardina_2019_cup who provides one of the most comprehensive treatments of conceptualizing, measuring, and examining the outcomes of White identity in politics includes indicators of economic status and power in the primary model.
+One perspective on what explains racial identity among Whites in the United States are that they are responding to threats to their economic status and power. Realistic Conflict Theory suggests that a racial identity and racial prejudice come as a response to a collective concern among members of a particular racial group about the loss of economic influence and the status a group holds relative to other racial groups [@blumer_race_1958;@bobo_perceptions_1996]. Some evidence suggests that Whites living in areas with shrinking job opportunities respond to this with an increased desire to protect the interests of their racial confederates [@baccini_gone_2021]. Others have experimental evidence supporting this perspective that White Political Identity is motivated by material concerns [@perez_politics_2022]. Further, @jardina_white_2019 who provides one of the most comprehensive treatments of conceptualizing, measuring, and examining the outcomes of White Political Identity includes indicators of economic status and power in the primary model.
 
-Social identity theory, and its offshoots, would suggest an alternative perspective: that Whites expressing a racial identity are responding to political, cultural, and societal threats. While these threats are a bit more hard to define, there are a number of examples that demonstrate Whites are responsive to cultural or political changes that present as a threat. For example, @mutz_status_2018 finds little support for the claim that the 2016 Presidential Election -- which support for Trump is associated with an expression of racial identity among Whites [@jardina_2020_pb] -- was a response to the economic effects of a globalizing economy and instead argues that it was a response to concerns about the changes brought about by globalization and the racial-diversity it promotes. Others demonstrate that the behavioral manifestations of a White constituency in the United States was a reflection of the saliency of race in politics [@agadjanian_lacy_2021].
-A final example demonstrated that exposure to a story about discrimination about a White person lead individuals concerned with the racial hierarchy to report that Whites faced similar amounts of institutional racism as Blacks [@marshburn_et-al_2022_gpir]. Others have made similar arguments through historical lenses by arguing that while race and class are highly correlated, the saliency of race in society and in our institutions continue to make it a salient group by which we structure our thinking about who has status and power [@helms_carter_1990;@dawson_1994_pup;@rile-hayward_2013]. This perspective fits with many arguments that the United States is not as class-conscious as they are race-conscious [@zoltan_l_hajnal_dangerously_2020].
+Social identity theory, and its offshoots, would suggest an alternative perspective: that Whites expressing a racial identity are responding to political, cultural, and societal threats. While these threats are a bit more hard to define, there are a number of examples that demonstrate Whites are responsive to cultural or political changes that present as a threat. A common touchstone of Social Dominance Theory suggests that members of a racial group with the highest status are likely to find ways to maintain the racial hierarchy [@lange_social_2012]. From this perspective, many argue that Whites in the United States have and continue focus their efforts on maintaining influence in our institutions so that they may continue to wield political influence [@rile_hayward_how_2013;@lopez_white_2006]. For example, @mutz_status_2018 finds little support for the claim that the 2016 Presidential Election -- which support for Trump is associated with an expression of racial identity among Whites [@jardina_disavowing_2021] -- was a response to the economic effects of a globalizing economy and instead argues that it was a response to concerns about the cultural changes brought about by globalization and the racial-diversity it promotes. Others demonstrate that the behavioral manifestations of a White constituency in the United States was a reflection of the saliency of race in politics [@agadjanian_changing_2021].
+
+A final example demonstrated that exposure to a story about discrimination about a White person lead individuals concerned with the racial hierarchy to report that Whites faced similar amounts of institutional racism as Blacks [@marshburn_dominance_2022]; that is, these Whites moved away from a color-blind ideology of race and expressed a more race-conscious ideology of White grievance [@smith_making_2023]. Others have made similar arguments through historical lenses by arguing that while race and class are highly correlated, but that the correlation is due to a pattern of using class to disenfranchise non-Whites [See @rile_hayward_how_2013]. Others point to the many examples of our institutions in the United States that continue to make race a salient group by which we structure our thinking about who has status and power [@helms_development_1990;@dawson_behind_1994;@rile_hayward_how_2013]. This perspective fits with many arguments that the United States is not as class-conscious as they are race-conscious [@hajnal_dangerously_2020].
 
 # Political versus economic threats
 
-I am using a popular conceptualization of racial identity among Whites: that expression of it reflects homophily toward's one's own racial group [@ellemers_et-al_2002_arp;@jardina_2019_cup]. As identity conceptualized this way may predict negative intergroup attitudes, it reflects a desire to find ways to find similarities rather than differences between one's self and other in-group members [@ellemers_et-al_2002_arp]. Identity is largely an elusive concept to operationalize [see @leach_et-al_2008]. Though there are implicit measures of White identity [see @knowles_peng_2005_jpsp], the common and measure of white identity is a response to the question, "How important is being White to your identity?" This measure captures a significant feature of an identity: the centrality or the importance of that identity to an individual [@jardina_2019_cup]. Though a rather rough measure of something as complex as identity, it has been shown to produce similar results to more complex measures of white identity and holds a significant amount of face validity [@jardina_2019_cup].
+I am using a popular conceptualization of racial identity among Whites: that expression of it reflects homophily toward's one's own racial group [@ellemers_self_2002;@jardina_white_2019]. As identity conceptualized this way may predict negative intergroup attitudes, it reflects a desire to find ways to find similarities rather than differences between one's self and other in-group members [@ellemers_self_2002]. Identity is largely an elusive concept to operationalize [see @leach_group_2008]. Though there are implicit measures of White identity [see @knowles_white_2005], the common and measure of white identity is a response to the question, "How important is being White to your identity?" This measure captures a significant feature of an identity: the centrality or the importance of that identity to an individual [@jardina_white_2019]. Though a rather rough measure of something as complex as identity, it has been shown to produce similar results to more complex measures of white identity and holds a significant amount of face validity [@jardina_white_2019].
 
-Threat is also quite difficult to measure directly. However, we can make a number of reasonable guesses about who may feel economic and political threat. There are two key things that threats affect. Status and power. Status refers to the respectability of the group whereas power refers to the influence that the group has [@craig_phillips_2023_ohpp]. Threat here refers to either a manifestation of economic or political challenges to the current racial hierarchy. I do not distinguish between these two sources of threat as common survey measures are too crude to distinguish between how the threat manifests. Here, I am focusing on what types of non-material threats activate White identity in the context of politics and will, as a shorthand refer to political, cultural, and societal threats as political threats.
+Threat is also quite difficult to measure directly. However, we can make a number of reasonable guesses about who may feel economic and political threat. There are two key things that threats affect. Status and power. Status refers to the respectability of the group whereas power refers to the influence that the group has [@craig_group-based_2023]. Threat here refers to either a manifestation of economic or political challenges to the current racial hierarchy. I do not distinguish between these two sources of threat as common survey measures are too crude to distinguish between how the threat manifests. Here, I am focusing on what types of non-material threats activate White identity in the context of politics and will, as a shorthand refer to political, cultural, and societal threats as political threats.
 
-A reasonable approach to measuring economic threat is to measure the economic circumstances that White individuals find themselves in. We may expect that Whites who are facing bottom-up economic competition, will be those that experience the strongest desire to identify themselves with their racial group. As the dominant racial group in the United States, Whites that are unemployed, are surrounded by other Whites who are experiencing economic hardship and those who have limited capacity to switch careers are those that may be the most motivated to identify with the dominant racial group to defend Whites' influence and status in society [@bobo_hutchings_1996_asr]. Therefore, measures of employment, finances, family finances, finances of those they know, and educational attainment all seem likely predictors of racial identity for Whites. This fits with measures that @dawson_1994_pup used to measure the influence of economics in Black American's identity. These measures also fit with @lindsay_2023_apr who found that many of these items predicted racial resentment among Whites.
+A reasonable approach to measuring economic threat is to measure the economic circumstances that White individuals find themselves in. We may expect that Whites who are facing bottom-up economic competition, will be those that experience the strongest desire to identify themselves with their racial group. As the dominant racial group in the United States, Whites that are unemployed, are surrounded by other Whites who are experiencing economic hardship and those who have limited capacity to switch careers are those that may be the most motivated to identify with the dominant racial group to defend Whites' influence and status in society [@bobo_perceptions_1996]. Therefore, measures of employment, finances, family finances, finances of those they know, and educational attainment all seem likely predictors of racial identity for Whites. This fits with measures that @dawson_behind_1994 used to measure the influence of economics in Black American's identity. These measures also fit with @lindsay_relationship_2023 who found that many of these items predicted racial resentment among Whites.
 
-Here I conceptualize of political threat as perceptions that politics and political institutions no longer serves White people. Existing work demonstrates that Whites who express a desire to maintain the racial status quo with Whites on top are more likely to express that Whites are discriminated against at similar levels as Blacks [@marshburn_et-al_2022_gpir]. As Whiteness is often a central component of Whites' conceptualization of American society [see @green_staerkle_2013], changes to "traditional American values" may reflect concern about changes to the influences of White values. Finally, a common finding is that expression of White identity is heavily wrapped up in the perception that racial stratifications are by meritocratic means [@lowery_et-al_2012_jpsp]. As members of a dominant social group, when given information that either threatens one's belief that their merits are earned or that their group operates as a way to maintain inequality, we expect lower levels of expression in identification with that group. The classic items of racial resentment construct capture these ideas in that they revolve around the idea that Blacks are not disadvantaged as the result of systematic oppression by Whites. Though many have often used racial resentment as a measure of prejudice which would be a possible outcome of White identity, some make the compelling argument that it is distinct as a concept and operationalization [@davis_wilson_2022_ucp].
+Here I conceptualize of political threat as perceptions that politics and political institutions no longer serves White people. Existing work demonstrates that Whites who express a desire to maintain the racial status quo with Whites on top are more likely to express that Whites are discriminated against at similar levels as Blacks [@marshburn_dominance_2022]. As Whiteness is often a central component of Whites' conceptualization of American society [see @green_migration_2013], changes to "traditional American values" may reflect concern about changes to the influences of White values. Finally, a common finding is that expression of White identity is heavily wrapped up in the perception that racial stratifications are by meritocratic means [@lowery_paying_2012]. As members of a dominant social group, when given information that either threatens one's belief that their merits are earned or that their group operates as a way to maintain inequality, we expect lower levels of expression in identification with that group. The classic items of racial resentment construct capture these ideas in that they revolve around the idea that Blacks are not disadvantaged as the result of systematic oppression by Whites. Though many have often used racial resentment as a measure of prejudice which would be a possible outcome of White identity, some make the compelling argument that it is distinct as a concept and operationalization [@davis_racial_2022].
 
 <!--
 Social identity theory suggests that individuals form attitudes based on groups they associate with, even if those groups are subjectively defined [see @tajfel_turner_1986]. In the famous Robber's Cave experiment, @sherif_1988 divided a group of adolescent boys into two groups arbitrarily. After a week of spending time with others in the group, the boys came up with group names that defined the two groups and distinguished themselves; one group called themselves the Eagles, and the other group referred to themselves as the Rattlers. With the introduction of competition, these boys reported fierce hostility toward the members of the other group and expressed positive attitudes toward those within the group. 
 <!--
 This example illustrates several features of social identities. The first feature of social identity theory is that these groups we may associate ourselves with are often subjectively defined [see @huddy_2001]. The second feature is that these subjective definitions of the group make distinctions between the two groups that come to matter to members of each group - some are part of our group, and some are part of that other group. Many cognitive theories suggest that this occurs as a result of the tendency for humans to reduce cognitive load by grouping things together [@huddy_2001]. The third feature is that introducing competition between these groups shapes attitudes toward those within and without your group. The motivator is that groups with higher status often want to keep that status, and individuals in the high-status group are much more likely to support inequality to satisfy that motivation [@burns_kinder_2012;@morrison_et-al_2009]. Fourth, individuals firmly hold these attitudes, which tend to be long-lasting. An additional feature of theories of social identity is that the degree to which one might identify with one group or another is fluid and that whether one identity that one might hold is active or if it is another often depends on the context and the identity's relevance to that context [@huddy_2012].
 
-Racial groups in the U.S. contain a number of these features. As a result, a burgeoning literature in political science that has made this connection takes the racial identity of whites more seriously as one that informs their political attitudes [see @jardina_2019_cup]. Race in America is subjectively defined [see @rile-hayward_2013], and these definitions are deeply embedded and reinforced by our institutions [@lopez_2006]. Whiteness and one's willingness to identify with that group is important [@wong_cho_2005] as it reflects a desire for an association with the history and affordances of being white [@mcdermott_samson_2005]. 
+Racial groups in the U.S. contain a number of these features. As a result, a burgeoning literature in political science that has made this connection takes the racial identity of whites more seriously as one that informs their political attitudes [see @jardina_white_2019]. Race in America is subjectively defined [see @rile-hayward_2013], and these definitions are deeply embedded and reinforced by our institutions [@lopez_2006]. Whiteness and one's willingness to identify with that group is important [@wong_cho_2005] as it reflects a desire for an association with the history and affordances of being white [@mcdermott_samson_2005]. 
 ->
-Recent work makes the case that we should seriously consider whites' racial identity as an identity [@jardina_2019_cup]. As an identity, much of the literature view these attitudes resulting from whites' racial identity as stemming from economic threat. Some studying white political identity find economic predictors as substantively and statistically significant [see @perez_et-al_2022_pp;@lindsay_2023_apr on their racial attitudes writ large]. Observational evidence supports this claim as well. For example, Trump's messaging about job market competition with immigrants appeared to be successful at attracting white voters [@bunyasi_2019]. After all, the identity literature, more broadly, often focuses on economic threats. Evolutionary psychologists often take the position that identity and the resulting attitudes and behaviors directed toward out-groups are the result of competition over material resources [see @huddy_2001]. Many political scientists use this as an explanation for negative attitudes directed toward immigrants among those who feel insecure about their job prospects [@pardos-prado_xena_2019]. Others argue that deindustrialization and job loss activate whites' concerns about the racial hierarchy and predict their support for Republican challengers that express support for keeping the racial status quo [@baccini_weymouth_2021_apsr].
+Recent work makes the case that we should seriously consider whites' racial identity as an identity [@jardina_white_2019]. As an identity, much of the literature view these attitudes resulting from whites' racial identity as stemming from economic threat. Some studying white political identity find economic predictors as substantively and statistically significant [see @perez_et-al_2022_pp;@lindsay_relationship_2023 on their racial attitudes writ large]. Observational evidence supports this claim as well. For example, Trump's messaging about job market competition with immigrants appeared to be successful at attracting white voters [@bunyasi_2019]. After all, the identity literature, more broadly, often focuses on economic threats. Evolutionary psychologists often take the position that identity and the resulting attitudes and behaviors directed toward out-groups are the result of competition over material resources [see @huddy_2001]. Many political scientists use this as an explanation for negative attitudes directed toward immigrants among those who feel insecure about their job prospects [@pardos-prado_xena_2019]. Others argue that deindustrialization and job loss activate whites' concerns about the racial hierarchy and predict their support for Republican challengers that express support for keeping the racial status quo [@baccini_weymouth_2021_apsr].
 
-As much of the literature on whites' racial attitudes rely heavily on social identity theory as a paradigm, a significant portion of it presents the source of these group-based views as responses to economic threat. However, some disagree with this position [see @jardina_2019_cup] and view these attitudes as the result of changes to the racial hierarchy. These other perspectives provide explanations for whites' attitudes and conceptualize the definition of whiteness and white identity as a desire to retain political power.
+As much of the literature on whites' racial attitudes rely heavily on social identity theory as a paradigm, a significant portion of it presents the source of these group-based views as responses to economic threat. However, some disagree with this position [see @jardina_white_2019] and view these attitudes as the result of changes to the racial hierarchy. These other perspectives provide explanations for whites' attitudes and conceptualize the definition of whiteness and white identity as a desire to retain political power.
 
 # Why might white identity be a backlash to loss of institutional privelege?
 
-While a critical component of identity is a feeling of your fate as linked with others in your group [@leach_et-al_2008], this linked fate is the connection between attitudes and material forms of threat but that identity, in and of itself, is better conceptualized as a result of cultural or ideational threat [@donnelly_2020]. Aligning with the contextual account of racial identity for whites, many conceptualize white identity as an expressed desire for a recognition of privilege and status by institutions [@lopez_2006] and a connection with the history that connects whites to their status [@mcdermott_samson_2005]. The prominent account of white political identity and its implications in contemporary American politics argues for a strong connection between white political identity and a desire to protect this racial hierarchy and status. This conceptualization reflects the tendency to report in-group-oriented, not necessarily out-group-oriented, attitudes [@jardina_2019_cup].
+While a critical component of identity is a feeling of your fate as linked with others in your group [@leach_et-al_2008], this linked fate is the connection between attitudes and material forms of threat but that identity, in and of itself, is better conceptualized as a result of cultural or ideational threat [@donnelly_2020]. Aligning with the contextual account of racial identity for whites, many conceptualize white identity as an expressed desire for a recognition of privilege and status by institutions [@lopez_2006] and a connection with the history that connects whites to their status [@mcdermott_samson_2005]. The prominent account of white political identity and its implications in contemporary American politics argues for a strong connection between white political identity and a desire to protect this racial hierarchy and status. This conceptualization reflects the tendency to report in-group-oriented, not necessarily out-group-oriented, attitudes [@jardina_white_2019].
 
 Whites' institutional privelege and threats to it are the more potent threats that whites may be less used to and as a result, coalesce as a group to defend. @winter_2008 demonstrates that whites' negative attitudes toward social welfare programs are motivated by perceptions that beneficiaries are Black. In this book length examination of the question, it is not that the people are poor and could use government assistance, it is that those receiving help are not white. Further, the increasing racial polarization is not something that is occuring among whites who are most economically threatened, but the Republican party is whiter with both wealthy and less wealthy whites -- political considerations are causally prior to racial attitudes [@engelhardt_2021_bjps; see also @schaffner_2022_bjps].
 
@@ -161,17 +159,17 @@ Not one single paper or effort to provide empirical evidence can satisfactorily 
 
 To examine whether whites' attitudes expressing concern about political threats are more robust correlates than their perceptions of the economy, I use the 2012, 2016, and 2020 American National Election Studies (ANES). The studies are nationally representative questions that capture several questions that lend themselves to testing the relationship between economic and political concerns while also asking white respondents to report how important being white is to their identity. 
 
-Though I am using the more crude measure of White identity and am limited in the predictors I can choose from, a larger concern is that the degree to which these threats may vary as a result of changes to the political landscape. Specifically, in 2008 the United States experienced a massive recession that lead hit the housing market quite hard. In 2012, the economy was still recovering. In 2016, Donald Trump became infamous for an election where he made race and gender extremely salient [@banda_cassese_2022_pb]. Finally, in 2020, Trump had been in office for four years with an improving economy. Each of these three years reflect a different context and may offer the opportunity to observe how economic and political threats operate differrently.
+Though I am using the more crude measure of White identity and am limited in the predictors I can choose from, a larger concern is that the degree to which these threats may vary as a result of changes to the political landscape. Specifically, in 2008 the United States experienced a massive recession that lead hit the housing market quite hard. In 2012, the economy was still recovering. In 2016, Donald Trump became infamous for an election where he made race and gender extremely salient [@banda_hostile_2022]. Finally, in 2020, Trump had been in office for four years with an improving economy. Each of these three years reflect a different context and may offer the opportunity to observe how economic and political threats operate differently.
 
 Question wording for each of the items in the following models are included in @tbl-anes-measures which is located in the Supplementary Materials. I include descriptive statistics for the measures in these samples in @tbl-2012-descriptive-stats, @tbl-2016-descriptive-stats, and @tbl-2020-descriptive-stats located in the Supplementary Information.
 
 ## Evidence from a penalized regression
 
-The primary contribution of this paper is to examine which, of several competing measures, of different types of threat may predict white identity for individuals. As this requires an ombnibus test, I elect to use a penalized regression. I provide a more detailed discussion of the reasons why I use an estimator with an L2 regularization parameter, often refered to as a LASSO model in the supplementary materials. In practice, the model applies a penalization term so predictors that have relatively fewer explanatory power have much smaller coefficients than the variables that do provide significant predictive power. 
+The primary contribution of this paper is to examine which, of several competing measures, of different types of threat may predict white identity for individuals. As this requires an omnibus test, I elect to use a penalized regression. I provide a more detailed discussion of the reasons why I use an estimator with an L2 regularization parameter, often referred to as a LASSO model in the supplementary materials. In practice, the model applies a penalization term so predictors that have relatively fewer explanatory power have much smaller coefficients than the variables that do provide significant predictive power. 
 
-My measure of white identity is ordinal. Therefore, I apply a ordered logistic link function. Though it creates a more complicated computational task, it is a more appropriate model specification given the available measure and my assumptions about the concept [@liddell_kruschke_2018_jesp].
+My measure of white identity is ordinal. Therefore, I apply a ordered logistic link function. Though it creates a more complicated computational task, it is a more appropriate model specification given the available measure and my assumptions about the concept [@liddell_analyzing_2018].
 
-To account for potential problems stemming from missing data, I impute my data by using multiple imputation with chained equations (MICE) where the particular model I use is a random forest model to allow for more flexibility and to reduce model dependence [@buuren_goothuis-oudshoorn_2011; @marbach_2022_pa].^[I impute 10 datasets and simultaneously fit my Bayesian LASSO on each dataset and pool the results. Uncertainty reflected in my reported credible intervals not only reflects the uncertainty from one model, but my reported uncertainty also reflects the uncertainty generated from the imputation procedure. One drawback with this particular approach is that my normalized split-$\hat{R}$ will likely be greater than the widely recognized 1.01 cutoff that indicates model convergence due to the pooling of my multiply imputed datasets.] I report the results of the model fitted using listwise deletion in the Supplementary Information.
+To account for potential problems stemming from missing data, I impute my data by using multiple imputation with chained equations (MICE) where the particular model I use is a random forest model to allow for more flexibility and to reduce model dependence [@buuren_mice_2011; @marbach_choosing_2022].^[I impute 10 datasets and simultaneously fit my Bayesian LASSO on each dataset and pool the results. Uncertainty reflected in my reported credible intervals not only reflects the uncertainty from one model, but my reported uncertainty also reflects the uncertainty generated from the imputation procedure. One drawback with this particular approach is that my normalized split-$\hat{R}$ will likely be greater than the widely recognized 1.01 cutoff that indicates model convergence due to the pooling of my multiply imputed datasets.] I report the results of the model fitted using listwise deletion in the Supplementary Information.
 
 ## Results
 
@@ -179,11 +177,11 @@ To account for potential problems stemming from missing data, I impute my data b
 
 ```{r}
 #| label: fig-2012-2016-2020-ordinal-lasso
-#| layout-ncol: 2
-#| fig-cap: Economic factors are weak predictors of white identity
+#| fig-cap: "Economic factors are weak predictors of White Political Identity"
 #| fig-subcap:
-#|   - Economic
-#|   - Political
+#|   - "Economic"
+#|   - "Political"
+#| layout-ncol: 2
 # Graphs
   #* Tidyfy posterior draws
     #** 2012
@@ -344,17 +342,17 @@ Examining the figure, we see that none of the proxies for economic threat consis
 
 For political threats, we see that in both instances where Obama was in the White House that those who reported being concerned with "new lifestyles" as well as those with a higher score on the racial resentment measures were associated with having higher white political identities. When Trump was in the White House, we see that those who felt that the government was biased against Whites, that Whites were discriminated against, and who scored higher on the racial resentment measures all reported higher levels of White political identity. 
 
-An additional question worth examining is that economic or political threat may appear differently for partisans and for female respondents. Recent evidence suggests that racial attitudes are guided by partisanship [@engelhardt_2021_bjps]. Specifically, some evidence suggests that White Democrats are much more sensitive to their racial identity than White Republicans due to the higher amount of racial heterogeneity within the Democratic party. This may mean for White Democrats that they have more exposure to intergroup competition for power within the party (such as the choice to support Hillary Clinton versus Barack Obama) and may have higher White identification as a result. The second way that these threats may matter more or less for Whites is on the dimension of sex. Sex-based differences in economic influence and status remains quite high. We therefore may expect that female individuals are more sensitive to economic threats than their male counterparts. In addition to the ombnibus model, I also include two additional models where I split the samples along the dimension of partisanship (including leaners in each) and on the dimension of sex.
+An additional question worth examining is that economic or political threat may appear differently for partisans and for female respondents. Recent evidence suggests that racial attitudes are guided by partisanship [@engelhardt_racial_2021]. Specifically, some evidence suggests that White Democrats are much more sensitive to their racial identity than White Republicans due to the higher amount of racial heterogeneity within the Democratic party. This may mean for White Democrats that they have more exposure to intergroup competition for power within the party (such as the choice to support Hillary Clinton versus Barack Obama) and may have higher White identification as a result. The second way that these threats may matter more or less for Whites is on the dimension of sex. Sex-based differences in economic influence and status remains quite high. We therefore may expect that female individuals are more sensitive to economic threats than their male counterparts. In addition to the omnibus model, I also include two additional models where I split the samples along the dimension of partisanship (including leaners in each) and on the dimension of sex.
 
 ```{r}
 #| label: fig-2012-2016-2020-female-male-lasso
-#| layout-ncol: 2
-#| fig-cap: Economic factors are weak predictors of white identity
+#| fig-cap: "Economic factors are weak predictors of white identity"
 #| fig-subcap:
-#|   - Female, Economic
-#|   - Female, Political
-#|   - Male, Economic
-#|   - Female, Economicß
+#|   - "Female, Economic"
+#|   - "Female, Political"
+#|   - "Male, Economic"
+#|   - "Female, Economic"
+#| layout-ncol: 2
 # Graphs
   #* Tidyfy posterior draws
     #** 2012
@@ -650,12 +648,12 @@ male_poli
 ```{r}
 #| label: fig-2012-2016-2020-pid-lasso
 #| layout-ncol: 2
-#| fig-cap: Economic factors are weak predictors of white identity
+#| fig-cap: "Economic factors are weak predictors of white identity"
 #| fig-subcap:
-#|   - Republican, Economic
-#|   - Republican, Political
-#|   - Democrat, Economic
-#|   - Democrat, Economic
+#|   - "Republican, Economic"
+#|   - "Republican, Political"
+#|   - "Democrat, Economic"
+#|   - "Democrat, Economic"
 # Graphs
   #* Tidyfy posterior draws
     #** 2012
@@ -1100,7 +1098,7 @@ data[["anes_2020"]] <- setnames(
 
 ```{r}
 #| label: tbl-2012-descriptive-stats
-#| tbl-cap: 2012 ANES Descriptive Statistics
+#| tbl-cap: "2012 ANES Descriptive Statistics"
 datasummary_skim(
   data[["anes_2012"]]
   , histogram = FALSE
@@ -1114,8 +1112,7 @@ datasummary_skim(
 
 ```{r}
 #| label: tbl-2016-descriptive-stats
-#| tbl-cap: 2016 ANES Descriptive Statistics
-  
+#| tbl-cap: "2016 ANES Descriptive Statistics"
 datasummary_skim(
   data[["anes_2016"]]
   , histogram = FALSE
@@ -1129,8 +1126,7 @@ datasummary_skim(
 
 ```{r}
 #| label: tbl-2020-descriptive-stats
-#| tbl-cap: 2020 ANES Descriptive Statistics
-
+#| tbl-cap: "2020 ANES Descriptive Statistics"
 datasummary_skim(
   data[["anes_2020"]]
   , histogram = FALSE
@@ -1144,13 +1140,15 @@ datasummary_skim(
 
 {{< pagebreak >}}
 
-## Model{.appendix}
+## Model {.appendix}
 
 The literature surveyed above suggests that there are a small number of variables that do predict white political identity, and there are many others that have no effect. Imagining an assumed hypothesis about the distribution of coefficients, this implies that the L2 regularization parameter equals 0. This is because the L2 regularization parameter shrinks coefficients asymptotically toward zero. The L1 regularization parameter, however, does allow for a shrinkage parameter to pull coefficients to 0. Given this, it suggests that the more appropriate model to capture this debate would be the LASSO penalized regression.
 
-Rather than use the classical LASSO with Leave One Out Cross Validation (LOOCV), I take advantage of a type of Markov Chain Monte Carlos (MCMC) called a Hamiltonian Monte Carlo for my LASSO due to a number of benefits outlined by @van-erp_et-al_2019_jmp. As the literature leads me to hold *apriori* expectations about the distribution of predictors that meaningfully effect white political identity, I specify a Laplace distribution as my prior density function. I suspect that there are a large number of included predictors that have null effects and a relatively smaller proportion of predictors that *do* have an effect but am relatively unsure about how large their coefficients might be. This characterization of my prior fits with that of an L2 Shrinkage parameter specified in a LASSO regression. As I am not using LOOCV, I am able to interpret the results of the model through my credible intervals. 
+Rather than use the classical LASSO with Leave One Out Cross Validation (LOOCV), I take advantage of a type of Markov Chain Monte Carlos (MCMC) called a Hamiltonian Monte Carlo for my LASSO due to a number of benefits outlined by @van_erp_shrinkage_2019. As the literature leads me to hold *apriori* expectations about the distribution of predictors that meaningfully effect white political identity, I specify a Laplace distribution as my prior density function. I suspect that there are a large number of included predictors that have null effects and a relatively smaller proportion of predictors that *do* have an effect but am relatively unsure about how large their coefficients might be. This characterization of my prior fits with that of an L2 Shrinkage parameter specified in a LASSO regression. As I am not using LOOCV, I am able to interpret the results of the model through my credible intervals. 
 
-### Full tables of results {.appendix}
+{{< pagebreak >}}
+
+### Full tables of results {.appendix} 
 
 ```{r}
 #| label: model-table-setup-block
@@ -1168,7 +1166,7 @@ cm_pid <- c('b_rboff' = 'Retrospective better off', 'b_epast' = 'Economy better'
 
 ```{r}
 #| label: tbl-2012-lasso-simple
-#| tbl-cap: Predictors of White Identity in 2012
+#| tbl-cap: "Predictors of White Identity in 2012"
 model_2012 <- list(
   "2012 LWD" = lasso[["2012_simple"]]
   , "2012" = lasso[["2012_ordinal"]]
@@ -1182,7 +1180,7 @@ modelsummary(model_2012, coef_map = cm, statistic = 'conf.int', gof_map = NA, ad
 
 ```{r}
 #| label: tbl-2012-gender-lasso
-#| tbl-cap: Predictors of White Identity in 2012 conditional on gender
+#| tbl-cap: "Predictors of White Identity in 2012 conditional on gender"
 
 model_2012_gender <- list(
   "2012 Female" = lasso[["2012_female"]]
@@ -1196,7 +1194,7 @@ modelsummary(model_2012_gender, coef_map = cm_gender, statistic = "conf.int", go
 
 ```{r}
 #| label: tbl-2012-pid-lasso
-#| tbl-cap: Predictors of White Identity in 2012 conditional on partisanship
+#| tbl-cap: "Predictors of White Identity in 2012 conditional on partisanship"
 
 model_2012_pid <- list(
   "2012 Republican" = lasso[["2012_republican"]]
@@ -1210,7 +1208,7 @@ modelsummary(model_2012_pid, coef_map = cm_pid, statistic = "conf.int", gof_map 
 
 ```{r}
 #| label: tbl-2016-lasso-simple
-#| tbl-cap: Predictors of White Identity in 2016
+#| tbl-cap: "Predictors of White Identity in 2016"
 model_2016 <- list(
   "2016 LWD" = lasso[["2016_simple"]]
   , "2016" = lasso[["2016_ordinal"]]
@@ -1223,7 +1221,7 @@ modelsummary(model_2016, coef_map = cm, statistic = 'conf.int', gof_map = NA, ad
 
 ```{r}
 #| label: tbl-2016-gender-lasso
-#| tbl-cap: Predictors of White Identity in 2016 conditional on gender
+#| tbl-cap: "Predictors of White Identity in 2016 conditional on gender"
 
 model_2016_gender <- list(
   "2016 Female" = lasso[["2016_female"]]
@@ -1237,7 +1235,7 @@ modelsummary(model_2016_gender, coef_map = cm_gender, statistic = "conf.int", go
 
 ```{r}
 #| label: tbl-2016-pid-lasso
-#| tbl-cap: Predictors of White Identity in 2016 conditional on partisanship
+#| tbl-cap: "Predictors of White Identity in 2016 conditional on partisanship"
 
 model_2016_pid <- list(
   "2016 Republican" = lasso[["2016_republican"]]
@@ -1250,7 +1248,7 @@ modelsummary(model_2016_pid, coef_map = cm_pid, statistic = "conf.int", gof_map 
 ```
 ```{r}
 #| label: tbl-2020-lasso-simple
-#| tbl-cap: Predictors of White identity in 2020
+#| tbl-cap: "Predictors of White identity in 2020"
 model_2020 <- list(
   "2020 LWD" = lasso[["2020_simple"]]
   , "2020" = lasso[["2020_ordinal"]]
@@ -1263,7 +1261,7 @@ modelsummary(model_2020, coef_map = cm, statistic = 'conf.int', gof_map = NA, ad
 
 ```{r}
 #| label: tbl-2020-gender-lasso
-#| tbl-cap: Predictors of White Identity in 2020 conditional on gender
+#| tbl-cap: "Predictors of White Identity in 2020 conditional on gender"
 
 model_2020_gender <- list(
   "2020 Female" = lasso[["2020_female"]]
@@ -1277,7 +1275,7 @@ modelsummary(model_2020_gender, coef_map = cm_gender, statistic = "conf.int", go
 
 ```{r}
 #| label: tbl-2020-pid-lasso
-#| tbl-cap: Predictors of White Identity in 2012 conditional on partisanship
+#| tbl-cap: "Predictors of White Identity in 2012 conditional on partisanship"
 
 model_2020_pid <- list(
   "2020 Republican" = lasso[["2020_republican"]]
