@@ -25,5 +25,5 @@ box::use(
 data[['anes_2012_sub']] <- data[['anes_2012']][
   , -c("wid", "pid", "female")
 ]
-pca_2012 <- PCA(data[['anes_2012_sub']], ncp=2)
+pca_2012 <- PCA(data[['anes_2012_sub']], ncp=2) # at most, there are like 5 dimensions and they all have weird components
 fviz_cos2(pca_2012, choice = "var", addlabels = TRUE)
