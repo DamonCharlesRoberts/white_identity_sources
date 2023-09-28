@@ -9,9 +9,9 @@
     #* Set seed
 set.seed(90210)
     #* Source cleaning scripts
-source('code/dcr_anes_2012_cleaning.R')
-source('code/dcr_anes_2016_cleaning.R')
-source('code/dcr_anes_2020_cleaning.R')
+source('./eda/dcr_anes_2012_cleaning.R')
+source('./eda/dcr_anes_2016_cleaning.R')
+source('./eda/dcr_anes_2020_cleaning.R')
     #* Modularly load functions and packages
 box::use(
     dplyr = dplyr[select, filter, mutate, case_when, rename],
