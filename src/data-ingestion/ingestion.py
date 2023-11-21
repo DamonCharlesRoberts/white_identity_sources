@@ -18,7 +18,7 @@ con = db.connect("./data/clean/project-data.db")
 df = pd.read_stata('./data/original/anes_2012/anes-2012.dta', convert_categoricals=False)
 con.execute(
     '''
-        CREATE TABLE
+        CREATE OR REPLACE TABLE
             Original12
         AS
             (
@@ -102,8 +102,8 @@ con.execute(
                 */
                 (
                     CASE
-                        WHEN dem_edugroup_x <= 0 THEN NULL
-                        ELSE dem_edugroup_x
+                        WHEN dem_edugroup_x >= 1 AND dem_edugroup_x <= 5 THEN dem_edugroup_x
+                        ELSE NULL
                     END
                 ) AS edu,
                 /* income - Income
@@ -135,8 +135,8 @@ con.execute(
                 */
                 (
                     CASE 
-                        WHEN immigpo_jobs < 1 THEN NULL
-                        ELSE immigpo_jobs 
+                        WHEN immigpo_jobs >= 1 AND immigpo_jobs <= 4 THEN immigpo_jobs
+                        ELSE NULL 
                     END
                 ) AS immtakejobs,
                 /* ecfamily - Worried about family finances
@@ -244,7 +244,7 @@ con.execute(
                         ELSE NULL
                     END
                 ) AS resentslavery,
-                /* resendeserve - Blacks have gotten less than they deserve
+                /* resentdeserve - Blacks have gotten less than they deserve
                     CODED AS: resent_deserve - 1 = Strongly agree TO 5 = Strongly disagree, < 1 = NULL
                     CODED TO: resentdeserve - -2 = Strongly agree TO 2 = Strongly disagree, NULL
                 */
@@ -271,7 +271,28 @@ con.execute(
                         WHEN resent_try == 1 THEN 2
                         ELSE NULL
                     END
-                ) AS resenttryhard
+                ) AS resenttryhard,
+                /* pid - Party Identification
+                    CODED AS: pid_x - 1 = Strong Democrat TO 7 = Strong Republican, < 1 = NULL
+                    CODED TO: pid - 1 = Strong Democrat TO 7 = Strong Republican, NULL
+                */
+                (
+                    CASE 
+                        WHEN pid_x >= 1 AND pid_x <= 7 THEN pid_x
+                        ELSE NULL
+                    END
+                ) AS pid,
+                /* female - Female
+                    CODED AS: gender_respondent_x - 1 = Male, 2 = Female, < 1 = NULL
+                    CODED TO: female - 0 = Male, 1 = Female, NULL
+                */
+                (
+                    CASE
+                        WHEN gender_respondent_x == 1 THEN 0
+                        WHEN gender_respondent_x == 2 THEN 1
+                        ELSE NULL
+                    END
+                ) AS female
             FROM
                 Original12
             WHERE
@@ -397,8 +418,8 @@ con.execute(
                     */
                     (
                         CASE
-                            WHEN V161270 <= 0 THEN NULL
-                            ELSE V161270
+                            WHEN V161270 >= 1 AND V161270 <= 16 THEN V161270
+                            ELSE NULL
                         END
                     ) AS edu,
                     /* income - Income
@@ -431,8 +452,8 @@ con.execute(
                     */
                     (
                         CASE
-                            WHEN V162158 <= 0 THEN NULL
-                            ELSE V162158
+                            WHEN V162158 >= 1 AND V162158 <= 4 THEN V162158
+                            ELSE NULL
                         END
                     ) AS immtakejobs,
                     /* ecfamily - Worried about family finances
@@ -567,8 +588,28 @@ con.execute(
                             WHEN V162214 == 1 THEN 2
                             ELSE NULL
                         END
-                    ) AS resenttryhard
-
+                    ) AS resenttryhard,
+                    /* pid - Party Identification
+                        CODED AS: V161158x - 1 = Strong Democrat TO 7 = Strong Republican, < 1 = NULL
+                        CODED TO: pid - 1 = Strong Democrat TO 7 = Strong Republican, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V161158x >= 1 AND V161158x <= 7 THEN V161158x
+                            ELSE NULL
+                        END
+                    ) AS pid,
+                    /* female - Female
+                        CODED AS: V161342 - 1 = Male, 2 = Female, < 1 = NULL
+                        CODED TO: female - 0 = Male, 1 = Female, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V161342 == 1 THEN 0
+                            WHEN V161342 == 2 THEN 1
+                            ELSE NULL
+                        END
+                    ) AS female
                 FROM
                     Original16
                 WHERE
@@ -605,7 +646,7 @@ con.execute(
 )
 # 2020 ANES
     #* Extract data and place in DB
-df = pd.read_stata('./data/original/anes_2020/anes-2020.dta', convert_categoricals=False)
+df = pd.read_stata('./data/original/anes_2020/anes_2020_original.dta', convert_categoricals=False)
 con.execute(
     '''
         CREATE OR REPLACE TABLE
@@ -628,11 +669,286 @@ con.execute(
         AS
             (
                 SELECT
-                    V200001 AS CaseID
-                    V200010a AS Weight
-            )
-    
+                    V200001 AS CaseID,
+                    V200010a AS Weight,
+                    /* wid - White Identity
+                        CODED AS: V202499x - 1 = Extremely Important TO 5 = Not at all important, < 1 = NULL
+                        CODED TO: wid - 1 = Not at all important TO 5 = Extremely Important, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202499x == 5 THEN 1
+                            WHEN V202499x == 4 THEN 2
+                            WHEN V202499x == 3 THEN 3
+                            WHEN V202499x == 2 THEN 4
+                            WHEN V202499x == 1 THEN 5
+                            ELSE NULL
+                        END
+                    ) AS wid,
+                    /* rboff - Retrospective better off
+                        CODED AS: V201502 - 1 = Much better TO 5 = Much worse, < 1 = NULL
+                        CODED TO: rboff - -2 = Much worse TO 2 = Much better, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201502 == 5 THEN -2
+                            WHEN V201502 == 4 THEN -1
+                            WHEN V201502 == 3 THEN 0
+                            WHEN V201502 == 2 THEN 1
+                            WHEN V201502 == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS rboff,
+                    /* epast - Economy better/worse than 1 year ago
+                        CODED AS: V201327x - 1 = Much better TO 5 = Much worse, < 1 = NULL
+                        CODED TO: epast - -2 = Much worse TO 2 = Much better, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201327x == 5 THEN -2
+                            WHEN V201327x == 4 THEN -1
+                            WHEN V201327x == 3 THEN 0
+                            WHEN V201327x == 2 THEN 1
+                            WHEN V201327x == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS epast,
+                    /* unpast - Unemployment better/wose than 1 year ago
+                        CODED AS: V201333x - 1 = Much better TO 5 = Much worse, < 1 = NULL
+                        CODED TO: unpast - -2 = Much worse TO 2 = Much better, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201333x == 5 THEN -2
+                            WHEN V201333x == 4 THEN -1
+                            WHEN V201333x == 3 THEN 0
+                            WHEN V201333x == 2 THEN 1
+                            WHEN V201333x == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS unpast,
+                    /* edu - Education
+                        CODED AS: V201511x - 1 = < high school, 2 = hs, 3 = some post-his, 4 = BS/BA, 5 = graduate, NULL
+                        CODED TO: edu - 1 = < hs, 2 = hs, 3 = some post-hs, 4 = BS/BA, 5 = graduate, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201511x >= 1 AND V201511x <= 5 THEN V201511x
+                            ELSE NULL
+                        END
+                    ) AS edu,
+                    /* income - Income
+                        CODED AS: V202468x - NULL = < 1, See codebook for other values
+                        CODED TO: income - NULL, See codebook for other values
+                    */
+                    (
+                        CASE
+                            WHEN V202468x <= 0 THEN NULL
+                            ELSE V202468x
+                        END
+                    ) AS income,
+                    /* losejob - Worried about losing job
+                        CODED AS: V201540 - 1 = Not at all TO 5 = Extremely worried, < 1 = NULL
+                        CODED TO: losejob - -2 = Extremely worried TO 2 = Not at all, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201540 == 5 THEN -2
+                            WHEN V201540 == 4 THEN -1
+                            WHEN V201540 == 3 THEN 0
+                            WHEN V201540 == 2 THEN 1
+                            WHEN V201540 == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS losejob,
+                    /* immtakejobs - How likely immigrants take jobs
+                        CODED AS: V202233 - 1 = Extremely TO 4 = Not at all, < 1 = NULL
+                        CODED TO: immtakejobs 1 = Extremely TO 4 = Not at all, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202233 >= 1 AND V202233 <= 4 THEN V202233
+                            ELSE NULL
+                        END
+                    ) AS V202233,
+                    /* ecfamily - Worried about family finances
+                        CODED AS: V201594 - 1 = Extremely TO 5 = Not at all, < 1 = NULL
+                        CODED TO: ecfamily - -2 = Not at all TO 2 = Extremely, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201594 == 5 THEN -2
+                            WHEN V201594 == 4 THEN -1
+                            WHEN V201594 == 3 THEN 0
+                            WHEN V201594 == 2 THEN 1
+                            WHEN V201594 == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS ecfamily,
+                    /* ecjob - Know someone who lost job
+                        CODED AS: V202488 - 1 = Someone lost job, 2 = No one lost job, < 1 = NULL
+                        CODED TO: ecjob - 0 = No one lost job, 1 = Someone lost job, NULL
+                    */
+                    (
+                        CASE 
+                            WHEN V202488 == 2 THEN 0
+                            WHEN V202488 == 1 THEN 1
+                            ELSE NULL
+                        END
+                    ) AS ecjob,
+                    /* govbias - Government biased against whites
+                        CODED AS: V202488 - 1 = Favors whites, 2 = Favors blacks, 3 = Neither, < 1 = NULL
+                        CODED TO: govbias - -1 = Favors blacks, 0 = Neither, 1 = Favors whites, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202488 == 2 THEN -1
+                            WHEN V202488 == 3 THEN 0
+                            WHEN V202488 == 1 THEN 1
+                            ELSE NULL
+                        END
+                    ) AS govbias,
+                    /* inflwhite - Influence whites have on politics
+                        CODED AS: V202494 - 1 = Too much, 2 = Just about right, 3 = Too little, < 1 = NULL
+                        CODED TO: inflwhite - -1 = Too little, 0 = Just about right, 1 = Too much, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202494 == 3 THEN -1
+                            WHEN V202494 == 2 THEN 0
+                            WHEN V202494 == 1 THEN 1
+                            ELSE NULL
+                        END
+                    ) AS inflwhite,
+                    /* whitediscrim - Whites are discriminated against
+                        CODED AS: V202530 - 1 = Strongly agree TO 5 = Strongly disagree, < 1 = NULL
+                        CODED TO: whitediscrim - -2 = Strongly disagree TO 2 = Strongly agree, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202530 == 5 THEN -2
+                            WHEN V202530 == 4 THEN -1
+                            WHEN V202530 == 3 THEN 0
+                            WHEN V202530 == 2 THEN 1
+                            WHEN V202530 == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS whitediscrim,
+                    /* resentworkway - Blacks should work way up
+                        CODED AS: V202300 - 1 = Strongly agree TO 5 = Strongly disagree, < 1 = NULL
+                        CODED TO: resentworkway - -2 = Strongly dissagree TO 2 = Strongly agree, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202300 == 5 THEN -2
+                            WHEN V202300 == 4 THEN -1
+                            WHEN V202300 == 3 THEN 0
+                            WHEN V202300 == 2 THEN 1
+                            WHEN V202300 == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS resentworkway,
+                    /* resentslavery - Slavery makes it difficult for Blacks
+                        CODED AS: V202301 - 1 = Strongly agree TO 5 = Strongly Disagree, < 1 = NULL
+                        CODED TO: resentslavery - -2 = Strongly disagree TO 2 = Strongly agree, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202301 == 5 THEN 2
+                            WHEN V202301 == 4 THEN 1
+                            WHEN V202301 == 3 THEN 0
+                            WHEN V202301 == 2 THEN -1
+                            WHEN V202301 == 1 THEN -2
+                            ELSE NULL
+                        END
+                    ) AS resentslavery,
+                    /* resenttryhard - Blacks should try harder to get ahead
+                        CODED AS: V202303 - 1 = Strongly agree TO 5 = Strongly disagree, < 1 = NULL
+                        CODED TO: resenttryhard - -2 = Strongly disagree TO 2 = Strongly agree, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202303 == 5 THEN -2
+                            WHEN V202303 == 4 THEN -1
+                            WHEN V202303 == 3 THEN 0
+                            WHEN V202303 == 2 THEN 1
+                            WHEN V202303 == 1 THEN 2
+                            ELSE NULL
+                        END
+                    ) AS resenttryhard,
+                    /* resentdeserve - Blacks have gotten less than they deserve
+                        CODED AS: V202302 - 1 = Strongly agree TO 5 = Strongly disagree, < 1 = NULL
+                        CODED TO: resentdeserve - -2 = Strongly agree TO 5 = Strongly disagree, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V202302 == 5 THEN 2
+                            WHEN V202302 == 4 THEN 1
+                            WHEN V202302 == 3 THEN 0
+                            WHEN V202302 == 2 THEN -1
+                            WHEN V202302 == 1 THEN -2
+                            ELSE NULL
+                        END
+                    ) AS resentdeserve,
+                    /* pid - Party Identification
+                        CODED AS: V201231x - 1 = Strong Democrat TO 7 = Strong Republican, < 1 = NULL
+                        CODED TO: pid - 1 = Strong Democrat TO 7 = Strong Republican, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201231x >= 1 AND V201231x <= 7 THEN V201231x
+                            ELSE NULL
+                        END
+                    ) AS pid,
+                    /* female - Female
+                        CODED AS: V201600 - 1 = Male, 2 = Female, < 1 = NULL
+                        CODED TO: female - 0 = male, 1 = female, NULL
+                    */
+                    (
+                        CASE
+                            WHEN V201600 == 1 THEN 0
+                            WHEN V201600 == 2 THEN 1
+                            ELSE NULL
+                        END
+                    ) AS female
+                FROM
+                    Original20
+                WHERE
+                    V201549x == 1
+            );
+        
+        CREATE OR REPLACE TABLE
+            Clean20
+        AS
+            (
+                SELECT
+                    Temp20.*,
+                    /* raceresent - Racial resentment
+                        CODED TO: Average of resentworkway, resentslavery, resentdeserve, resenttryhard
+                    */
+                    (
+                        CASE
+                            WHEN
+                                resentworkway IS NULL
+                                AND resentslavery IS NOT NULL
+                                AND resentdeserve IS NOT NULL
+                                AND resenttryhard IS NOT NULL
+                            THEN
+                                (resentworkway + resentslavery + resentdeserve + resenttryhard)/4
+                            ELSE
+                                NULL
+                        END
+                    ) AS raceresent
+                FROM
+                    Temp20
+            );
+        
+        DROP VIEW Temp20;
     '''
 )
+
 # Close DB connection
 con.close()
+
+# Print message
+print("\nData ingestion successful!\n")
