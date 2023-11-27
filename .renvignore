@@ -1,0 +1,4 @@
+# Ignore the following files for deciding dependencies for renv.
+./src/data-ingestion/archive
+./src/models/archive
+./src/manuscript.qmd
