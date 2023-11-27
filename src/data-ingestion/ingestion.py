@@ -324,7 +324,23 @@ con.execute(
             FROM
                 Temp12
         );
-    
+
+    ALTER TABLE
+        Clean12
+        DROP COLUMN resentworkway;
+
+    ALTER TABLE
+        Clean12
+        DROP COLUMN resentslavery;
+        
+    ALTER TABLE
+        Clean12
+        DROP COLUMN resentdeserve;
+        
+    ALTER TABLE
+        Clean12
+        DROP COLUMN resenttryhard;
+
     DROP VIEW Temp12;
     '''
 )
@@ -640,6 +656,22 @@ con.execute(
             FROM
                 Temp16
         );
+
+    ALTER TABLE
+        Clean16
+        DROP COLUMN resentworkway;
+
+    ALTER TABLE
+        Clean16
+        DROP COLUMN resentslavery;
+        
+    ALTER TABLE
+        Clean16
+        DROP COLUMN resentdeserve;
+        
+    ALTER TABLE
+        Clean16
+        DROP COLUMN resenttryhard;
     
     DROP View Temp16;
     '''
@@ -942,8 +974,24 @@ con.execute(
                 FROM
                     Temp20
             );
+
+    ALTER TABLE
+        Clean20
+        DROP COLUMN resentworkway;
+
+    ALTER TABLE
+        Clean20
+        DROP COLUMN resentslavery;
         
-        DROP VIEW Temp20;
+    ALTER TABLE
+        Clean20
+        DROP COLUMN resentdeserve;
+        
+    ALTER TABLE
+        Clean20
+        DROP COLUMN resenttryhard;
+
+    DROP VIEW Temp20;
     '''
 )
 
