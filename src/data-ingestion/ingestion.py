@@ -770,7 +770,7 @@ con.execute(
                             WHEN V202233 >= 1 AND V202233 <= 4 THEN V202233
                             ELSE NULL
                         END
-                    ) AS V202233,
+                    ) AS immtakejobs,
                     /* ecfamily - Worried about family finances
                         CODED AS: V201594 - 1 = Extremely TO 5 = Not at all, < 1 = NULL
                         CODED TO: ecfamily - -2 = Not at all TO 2 = Extremely, NULL
