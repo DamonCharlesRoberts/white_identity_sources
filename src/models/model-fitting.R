@@ -20,12 +20,13 @@ load(
 )
 
 # Fit models
+anes_2012_df <- na.omit(list_df[["anes_2012"]])
 anes_2012 <- list(
-    y = as.array(list_df[["anes_2012"]]$wid)
-    , x = as.matrix(list_df[["anes_2012"]][, -1:-3])
-    , N = as.integer(length(list_df[["anes_2012"]][, -1:-3]))
-    , K = as.integer(5)
-    , D = as.integer(ncol(list_df[["anes_2012"]][, -1:-3]))
+    y = anes_2012_df$wid
+    , x = anes_2012_df[, -1:-3]
+    , N = nrow(anes_2012_df)
+    , K = 5
+    , D = ncol(anes_2012_df[, -1:-3])
 )
 model[["2012"]] <- stan(
     file = "./src/models/2012-model.stan"
