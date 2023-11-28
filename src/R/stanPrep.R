@@ -49,15 +49,15 @@ stan_prep <- function(
 ) {
   #if (is.list(x) && !inherits(x, "data.frame")) {
   if ('mids' %in% class(x)) {
-    return_obj <- miceadds::mids2datlist(x)
+    list_mice_df <- miceadds::mids2datlist(x)
     return_obj <- lapply(
-        1:length(return_obj)
-        , function(i) single_df_prep(df=return_obj[[i]])
+        1:length(list_mice_df)
+        , function(i) single_df_prep(df=list_mice_df[[i]])
     )
     return(return_obj)
   } else if (is.data.frame(x)) {
-    return_obj <- stats::na.omit(x)
-    return_obj <- single_df_prep(x)
+    omit_na_df <- stats::na.omit(x)
+    return_obj <- single_df_prep(omit_na_df)
     return(return_obj)
   } else {
     print("Please enter a list of data.frame or data.frame objects.")

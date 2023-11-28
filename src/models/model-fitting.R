@@ -15,6 +15,7 @@ box::use(
   rstan[...]
   , miceadds[mids2datlist]
   , ./src/R/stanPrep[stan_prep]
+  , ./src/R/modelFitting[model_fitting]
 )
   #* Load data
 load(
@@ -35,69 +36,46 @@ list_data[["mice"]][["16"]] <- stan_prep(x = list_df[["anes_2016_imputed"]])
 list_data[["lwd"]][["20"]] <- stan_prep(x = list_df[["anes_2020"]])
 list_data[["mice"]][["20"]] <- stan_prep(x = list_df[["anes_2020_imputed"]])
 
-
 # Fit models
-models[["lwd"]][["12"]] <- stan(
-    file = "./src/models/main-penalized-model.stan"
-    , data = list_data[["lwd"]][["12"]]
-    , chains = 6
-    , cores = 5
-    , iter = 2000
-    , warmup = 1000
-    , model_name = "ANES 2012 LWD"
+
+models[["lwd"]][["12"]] <- model_fitting(
+  data = list_data[["lwd"]][["12"]]
+  , type = "lwd"
+  , model_name "ANES 2012 LWD"
 )
 
-models[["mice"]][["12"]] <- lapply(
-  1:length(list_data[["mice"]][["12"]])
-  , function (x) {
-    stan(
-      file = "./src/models/main-penalized-model.stan"
-      , data = list_data[["mice"]][["12"]][[x]]
-      , chains = 6
-      , cores = 5
-      , iter = 100
-      , warmup = 1
-      , model_name = "ANES 2012 MICE"
-    )
-  }
+models[["mice"]][["16"]] <- model_fitting(
+  data = list_data[["mice"]][["12"]]
+  , type = "mice"
+  , model_name = "ANES 2012 MICE"
 )
 
-models[["lwd"]][["16"]] <- stan(
-    file = "./src/models/main-penalized-model.stan"
-    , data = list_data[["lwd"]][["16"]]
-    , chains = 6
-    , cores = 5
-    , iter = 2000
-    , warmup = 1000
-    , model_name = "ANES 2016 LWD"
+models[["lwd"]][["16"]] <- model_fitting(
+  data = list_data[["lwd"]][["16"]]
+  , type = "lwd"
+  , model_name = "ANES 2016 LWD"
 )
 
-models[["mice"]][["16"]] <- stan(
-    file = "./src/models/main-penalized-model.stan"
-    , data = list_data[["mice"]][["16"]]
-    , chains = 6
-    , cores = 5
-    , iter = 2000
-    , warmup = 1000
-    , model_name = "ANES 2016 MICE"
+models[["mice"]][["16"]] <- model_fitting(
+  data = list_data[["mice"]][["16"]]
+  , type = "mice"
+  , model_name = "ANES 2016 MICE"
 )
 
-models[["lwd"]][["20"]] <- stan(
-    file = "./src/models/main-penalized-model.stan"
-    , data = list_data[["lwd"]][["20"]]
-    , chains = 6
-    , cores = 5
-    , iter = 2000
-    , warmup = 1000
-    , model_name = "ANES 2020 LWD"
+models[["lwd"]][["20"]] <- model_fitting(
+  data = list_data[["lwd"]][["20"]]
+  , type = "lwd"
+  , model_name = "ANES 2020 LWD"
 )
 
-models[["mice"]][["20"]] <- stan(
-    file = "./src/models/main-penalized-model.stan"
-    , data = list_data[["mice"]][["20"]]
-    , chains = 6
-    , cores = 5
-    , iter = 2000
-    , warmup = 1000
-    , model_name = "ANES 2020 MICE"
+models[["mice"]][["16"]] <- model_fitting(
+  data = list_data[["mice"]][["20"]]
+  , type = "mice"
+  , model_name = "ANES 2020 MICE"
+)
+
+# Save results of model
+save(
+  models
+  , './data/temp/fitted-models.RData'
 )
