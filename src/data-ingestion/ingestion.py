@@ -961,7 +961,7 @@ con.execute(
                     (
                         CASE
                             WHEN
-                                resentworkway IS NULL
+                                resentworkway IS NOT NULL
                                 AND resentslavery IS NOT NULL
                                 AND resentdeserve IS NOT NULL
                                 AND resenttryhard IS NOT NULL

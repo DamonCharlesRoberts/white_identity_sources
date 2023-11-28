@@ -14,12 +14,12 @@ set.seed(121022)
 box::use(
   rstan[...]
   , miceadds[mids2datlist]
-  , ./src/R/stanPrep[stan_prep]
-  , ./src/R/modelFitting[model_fitting]
+  , ./R/stanPrep[stan_prep]
+  , ./R/modelFitting[model_fitting]
 )
   #* Load data
 load(
-    './data/temp/imputed_data.RData'
+    '../data/temp/imputed_data.RData'
 )
   #* Create empty model list object
 list_data <- list("lwd" = list(), "mice" = list())
@@ -41,7 +41,7 @@ list_data[["mice"]][["20"]] <- stan_prep(x = list_df[["anes_2020_imputed"]])
 models[["lwd"]][["12"]] <- model_fitting(
   data = list_data[["lwd"]][["12"]]
   , type = "lwd"
-  , model_name "ANES 2012 LWD"
+  , model_name = "ANES 2012 LWD"
 )
 
 models[["mice"]][["16"]] <- model_fitting(
@@ -77,5 +77,5 @@ models[["mice"]][["16"]] <- model_fitting(
 # Save results of model
 save(
   models
-  , './data/temp/fitted-models.RData'
+  , file = './data/temp/fitted-models.RData'
 )
