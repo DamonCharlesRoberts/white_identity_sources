@@ -49,7 +49,7 @@ stan_prep <- function(
 ) {
   #if (is.list(x) && !inherits(x, "data.frame")) {
   if ('mids' %in% class(x)) {
-    complete_mice_df <- mice::complete(x)
+    complete_mice_df <- mice::complete(x, action = "long")
     list_mice_df <- base::split(complete_mice_df, f = complete_mice_df$`.imp`)
     return_obj <- lapply(
         1:length(list_mice_df)
