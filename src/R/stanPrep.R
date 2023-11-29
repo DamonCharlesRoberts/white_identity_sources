@@ -49,7 +49,8 @@ stan_prep <- function(
 ) {
   #if (is.list(x) && !inherits(x, "data.frame")) {
   if ('mids' %in% class(x)) {
-    list_mice_df <- miceadds::mids2datlist(x)
+    complete_mice_df <- mice::complete(x)
+    list_mice_df <- base::split(complete_mice_df, f = complete_mice_df$`.imp`)
     return_obj <- lapply(
         1:length(list_mice_df)
         , function(i) single_df_prep(df=list_mice_df[[i]])

@@ -19,7 +19,7 @@ box::use(
 )
   #* Load data
 load(
-    '../data/temp/imputed_data.RData'
+    './data/temp/imputed_data.RData'
 )
   #* Create empty model list object
 list_data <- list("lwd" = list(), "mice" = list())

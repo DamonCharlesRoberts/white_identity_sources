@@ -818,13 +818,13 @@ con.execute(
                         END
                     ) AS ecfamily,
                     /* ecjob - Know someone who lost job
-                        CODED AS: V202488 - 1 = Someone lost job, 2 = No one lost job, < 1 = NULL
+                        CODED AS: V201596 - 1 = Someone lost job, 2 = No one lost job, < 1 = NULL
                         CODED TO: ecjob - 0 = No one lost job, 1 = Someone lost job, NULL
                     */
                     (
                         CASE 
-                            WHEN V202488 == 2 THEN 0
-                            WHEN V202488 == 1 THEN 1
+                            WHEN V201596 == 2 THEN 0
+                            WHEN V201596 == 1 THEN 1
                             ELSE NULL
                         END
                     ) AS ecjob,
