@@ -8,7 +8,7 @@ data {
 
 parameters {
     vector[D] beta; // Coefficients for predictors
-    ordered[K-1] c; // The cutpoints of the model
+    ordered[K-1] Intercept; // The cutpoints of the model
     real<lower=0> lambda; // Global shrinkage parameter
     vector<lower=0>[D] tau; // Local shrinkage parameters
 
@@ -21,5 +21,17 @@ model {
     beta ~ normal(0, lambda * tau);
     
     // Specify the likelihood
-    y ~ ordered_logistic(x * beta, c);
+    y ~ ordered_logistic(x * beta, Intercept);
+}
+
+generated quantities {
+    array[N] int<lower=1, upper=K> y_rep;
+
+    for (n in 1:N) {
+        vector[K-1] cutpoints;
+        for (k in 1:(K-1)) {
+            cutpoints[k] = Intercept[k];
+        }
+        y_rep[n] = ordered_logistic_rng(x[n] * beta, cutpoints);
+    }
 }

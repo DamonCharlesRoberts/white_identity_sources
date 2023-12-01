@@ -181,20 +181,14 @@ data[["anes_2020_imputed_democrat"]] <- mice(
 )
 
 # Fit models
-lasso[["2012_simple"]] <- brm(
-  formula = bf(
-    wid ~ rboff + epast + unpast + edu +
+lasso[["2012_simple"]] <- make_stancode(
+  formula = wid ~ rboff + epast + unpast + edu +
     income + losejob + ecfamily + ecjob +
     tradbreak + govbias + whitediscrim +
-    raceResent + pid + female
-  )
-  , data = data[["anes_2012"]]
-  , prior = set_prior(lasso(1))
-  , chains = 6
-  , iter = 2000
-  , threads = 5
+    raceresent + pid + female
+  , data = list_df[["anes_2012"]]
+  , prior = set_prior(horseshoe(1), class = "b")
   , family = cumulative(link = "logit")
-  , backend = "cmdstanr"
 )
 
 lasso[["2012_ordinal"]] <- brm_multiple(

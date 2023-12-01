@@ -1,4 +1,4 @@
-#' @title plotting LASSO results
+#' @title rstan_ppc
 #' 
 #' @description
 #' This is a function that takes the results from the fitted LASSO models
@@ -12,20 +12,44 @@
 #' 
 #' @example
 #' 
-lasso_plot <- function (
+rstan_ppc <- function (
   model
-  , level = 0.95
-  , year = "2012"
+  , data
 ) {
-  #* grab the posterior draws
-  df_posterior <- parameters(
-    model = model
-    , level = level
-    , verbose = FALSE
-  ) |>
-  standardize_names(style = "broom") |>
-  data.frame() |>
-  mutate(model = year) |>
-  filter(!is.na(term))
+  y_rep <- extract(model)$y_rep
+  y <- data[["y"]]
+  bayesplot::ppc_dens_overlay(y = y, yrep = y_rep)
+}
 
+#' @title rstan_intervals
+#' 
+#' @description
+#' Function for plotting the credible intervals of the model
+#' 
+#' @details 
+#' 
+#' @param
+#' 
+#' @return 
+#' 
+#' @example 
+#' 
+rstan_intervals <- function(
+  model
+  , prob = 0.89
+  , prob_outer = 0.95
+  , regex_pars = "beta\\[[1-9]|10:16\\]"
+  , labels = c()
+) {
+  plot <- bayesplot::mcmc_intervals(
+    model
+    , regex_pars = regex_pars
+    , prob = prob
+    , prob_outer = prob_outer
+  )
+  if (length(labels) != 0) {
+    plot <- scale_y_discrete(
+      labels = labels
+    )
+  }
 }

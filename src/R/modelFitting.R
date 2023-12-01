@@ -46,7 +46,7 @@ single_model_fit <- function(
 #' @example 
 #' 
 model_fitting <- function(
-  file = './src/models/main-penalized-model.stan'
+  file = './src/models/STAN/main-penalized-model.stan'
   , data
   , chains = 6
   , cores = 5
