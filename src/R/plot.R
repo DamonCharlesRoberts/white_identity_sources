@@ -16,9 +16,10 @@ rstan_ppc <- function (
   model
   , data
 ) {
-  y_rep <- extract(model)$y_rep
+  y_rep <- rstan::extract(model)$y_rep
   y <- data[["y"]]
-  bayesplot::ppc_dens_overlay(y = y, yrep = y_rep)
+  plot <- bayesplot::ppc_dens_overlay(y = y, yrep = y_rep)
+  return(plot)
 }
 
 #' @title rstan_intervals
@@ -48,8 +49,10 @@ rstan_intervals <- function(
     , prob_outer = prob_outer
   )
   if (length(labels) != 0) {
-    plot <- scale_y_discrete(
+    plot <- plot + ggplot2::scale_y_discrete(
       labels = labels
     )
+
   }
+  return(plot)
 }

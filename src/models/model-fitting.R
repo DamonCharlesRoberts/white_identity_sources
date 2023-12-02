@@ -14,8 +14,8 @@ set.seed(121022)
 box::use(
   rstan[...]
   , miceadds[mids2datlist]
-  , ./src/R/stanPrep[stan_prep]
-  , ./src/R/modelFitting[model_fitting]
+  , ../R/stanPrep[stan_prep]
+  , ../R/modelFitting[model_fitting]
 )
   #* Load data
 load(
